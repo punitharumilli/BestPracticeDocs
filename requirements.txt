@@ -1,0 +1,4 @@
+# Pinned so a site build is reproducible and an upstream release cannot break
+# a deployment without a deliberate change here.
+mkdocs-material==9.5.44
+mkdocs==1.6.1

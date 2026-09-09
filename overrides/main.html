@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block site_logo %}
+  <!-- Empty to remove any logo/icon from the top blue header -->
+{% endblock %}
+
+{% block site_nav %}
+  {% if nav %}
+    {% if page.meta and page.meta.hide %}
+      {% set hidden = "hidden" if "navigation" in page.meta.hide %}
+    {% endif %}
+    <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" {{ hidden }}>
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner">
+          <div style="position: sticky; top: 0; z-index: 10; padding: 10px 15px; margin-bottom: 10px; text-align: center; background-color: white; border-bottom: 1px solid #e0e0e0;">
+            <a href="{{ base_url }}/" title="Home">
+              <img src="{{ base_url }}/assets/BAM_Logo_RGB.jpg" alt="BAM Logo" style="width: 100%; max-width: 110px; display: inline-block; padding: 2px;" />
+            </a>
+          </div>
+          {% include "partials/nav.html" %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  {% if not page.is_homepage %}
+    {% if page.meta and page.meta.hide %}
+      {% set hidden = "hidden" if "toc" in page.meta.hide %}
+    {% endif %}
+    <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" {{ hidden }}>
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner">
+          {% include "partials/toc.html" %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

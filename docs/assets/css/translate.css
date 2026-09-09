@@ -1,0 +1,41 @@
+/* Hide Google Translate top banner and frame */
+.goog-te-banner-frame.skiptranslate, 
+.goog-te-banner-frame,
+#goog-gt-tt,
+.goog-te-balloon-frame {
+    display: none !important;
+}
+
+body {
+    top: 0px !important;
+    position: static !important;
+}
+
+/* Hide Google Translate tooltip on hover */
+.goog-tooltip,
+.goog-tooltip:hover {
+    display: none !important;
+}
+
+.goog-text-highlight {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Hide the default translate element container */
+#google_translate_element {
+    display: none !important;
+}
+
+/* Hide the Google Translate iframe if it appears */
+iframe.goog-te-banner-frame {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+}
+
+/* Ensure the language switcher icon in the header looks clean and aligned */
+.md-header__option .md-select__button {
+    cursor: pointer;
+}

@@ -1,0 +1,101 @@
+site_name: Digital Reference Material Document (DRMD)
+site_description: Best practice guidelines for the DRMD XML schema, aligned with ISO 33401:2024
+site_author: BAM, Bundesanstalt für Materialforschung und -prüfung
+site_url: https://punitharumilli.github.io/DRMD_Schema/
+
+theme:
+  name: material
+  custom_dir: overrides
+  favicon: assets/BAM_Logo_RGB.jpg
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: deep orange
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: deep orange
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+
+nav:
+  - 1. Home: index.md
+  - 2. Overview & Architecture: architecture.md
+  - 3. Administrative Data: administrative_data.md
+  - 4. Materials: materials.md
+  - 5. Properties: properties.md
+  - 6. Statements: statements.md
+  - 7. Comments & Documents: comments_documents.md
+  - 8. Digital Signature: digital_signature.md
+  - 9. Interoperability Profiles: interoperability_profiles.md
+  - 10. Cross-reference Conventions: cross_references.md
+  - 11. Units, Quantities & Uncertainty: units_quantities.md
+  - 12. Validation Rules: validation_rules.md
+  - 13. Parsing & Data Extraction: parsing_guide.md
+  - 14. Security & Trust Model: security_trust.md
+  - 15. Versioning: versioning.md
+  - 16. ISO 33401:2024 Conformance Map: iso_mapping.md
+  - 17. Implementation Checklists: checklists.md
+  - 18. Schema Interactive Tree: schema_tree.md
+
+# Fail the build on a broken internal link rather than publishing one.
+strict: true
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.inlinehilite
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.mark
+  - pymdownx.critic
+  - pymdownx.keys
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+
+extra:
+  alternate:
+    - name: English
+      link: "#en"
+      lang: en
+    - name: Deutsch
+      link: "#de"
+      lang: de
+
+extra_css:
+  - assets/css/translate.css
+
+extra_javascript:
+  - assets/js/translate.js
