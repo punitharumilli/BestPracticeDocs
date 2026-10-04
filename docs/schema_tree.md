@@ -285,6 +285,42 @@ hide:
 .sev-conditional { background: #ef6c00; }
 .sev-warning { background: #2e7d32; }
 
+/* Certified vs informative values */
+.cert-note {
+    background: #fff8e1;
+    border-left: 4px solid #f9a825;
+    padding: 10px 12px;
+    margin: 10px 0 14px 0;
+    border-radius: 0 4px 4px 0;
+    font-size: 0.85em;
+    line-height: 1.5;
+}
+.cert-option { margin-top: 8px; padding-top: 6px; border-top: 1px solid rgba(0,0,0,0.08); }
+.cert-option .cert-chip { margin-bottom: 3px; }
+.cert-chip {
+    display: inline-block;
+    font-weight: 700;
+    font-size: 0.85em;
+    padding: 1px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+.cert-chip.certified { background: #2e7d32; color: #fff; }
+.cert-chip.informative { background: #78909c; color: #fff; }
+.card-note {
+    background: #fbe9e7;
+    border-left: 4px solid #d84315;
+    padding: 8px 12px;
+    margin: 10px 0 14px 0;
+    border-radius: 0 4px 4px 0;
+    font-size: 0.85em;
+    line-height: 1.5;
+}
+.node.cert-switch > rect { stroke: #f9a825; stroke-width: 3px; }
+.node .cert-tag-bg, .node.selected .cert-tag-bg { fill: #f9a825; stroke: none; }
+.node .cert-tag { fill: #000; font-size: 9.5px; font-weight: 700; }
+.node.cert-inherited > rect { stroke-dasharray: 4 2; }
+
 .bp-link {
     display: inline-block;
     margin: 10px 0 15px 0;
@@ -304,6 +340,30 @@ hide:
     transform: translateY(-1px);
 }
 </style>
+
+???+ info "How to read the tree"
+    **Cardinality** `[min..max]` on every box is the *effective* cardinality: how often the element may
+    really appear once optional or repeatable groups around it are taken into account. An element that
+    is one option of a choice is therefore shown as optional, and an element inside a repeatable choice
+    (for example the parts of an address in `dcc:location`) as optional and repeatable. Where this
+    differs from what the element itself declares, the details panel shows both.
+
+    **Certified vs informative values.** Both are written in exactly the same structure. The only
+    switch is the `@isCertified` attribute on each `properties` block, highlighted in the tree with a
+    yellow frame and the tag **@isCertified**. Everything inside a block (results, quantities,
+    uncertainties) takes its status from that block.
+
+    ```mermaid
+    graph LR
+        PL["propertiesList"] --> P1["properties<br/>@isCertified = true"]
+        PL --> P2["properties<br/>@isCertified omitted or false"]
+        P1 --> C["<b>Certified values</b><br/>RM certificate only (RMC-002, PIS-001)<br/>uncertainty required (RMC-006 to RMC-009)<br/>traceability statement required (RMC-001)"]
+        P2 --> I["<b>Informative values</b><br/>e.g. indicative or additional values<br/>both document types<br/>uncertainty optional"]
+        style P1 fill:#fff8e1,stroke:#f9a825,stroke-width:3px,color:#000
+        style P2 fill:#fff8e1,stroke:#f9a825,stroke-width:3px,color:#000
+        style C fill:#e8f5e9,stroke:#2e7d32,color:#000
+        style I fill:#eceff1,stroke:#78909c,color:#000
+    ```
 
 <div class="schema-explorer">
     <div class="pane-left" id="tree-nav">
@@ -429,7 +489,7 @@ function initSchemaTree() {
             document.getElementById("d3-graph").innerHTML = `<div style="color:red; padding:20px;">Failed to load schema data. Check console.</div>`;
         });
 
-    // Best Practice deep-link mapping (element name → anchor on admin page)
+    // Guidance deep-link mapping (element name → anchor in the guidance chapters)
     const bestPracticeLinks = {
         'administrativeData': 'administrative_data/#structure-at-a-glance',
         'coreData': 'administrative_data/#31-core-data-coredata',
@@ -496,7 +556,7 @@ function initSchemaTree() {
         'referenceToCertificationReport': 'statements/#639-reference-to-certification-report-referencetocertificationreport',
         'statement': 'statements/#6310-statement-catch-all-statement',
         'unit': 'units_quantities/#111-unit-strings-siunit',
-        'Signature': 'signatures/#71-signature-element-signature',
+        'Signature': 'digital_signature/#structure-at-a-glance',
     };
 
     let selectedParent = null;
@@ -529,17 +589,55 @@ function initSchemaTree() {
         if (data.abstract) html += `<span class="badge badge-abstract">Abstract</span>`;
         html += `</div>`;
 
-        // A choice must never be read as "all of these are required". The cardinality on each
-        // option is its cardinality *if that option is the one used*, not a requirement to
-        // include it alongside the others.
+        // A choice must never be read as "all of these are required". The cardinality shown is
+        // the effective one (computed by build_schema_tree.py), so an option of a choice is
+        // shown as optional; the note says what the choice as a whole requires.
         if (data.compositor === "choice") {
             const siblings = (selectedParent && selectedParent.children || [])
-                .filter(c => c.compositor === "choice" && c.name !== data.name)
+                .filter(c => c.compositor === "choice" && c.name !== data.name
+                             && (data.group === undefined || c.group === data.group))
                 .map(c => `<code>${c.name}</code>`);
-            html += `<div class="choice-note"><strong>This element is one option of a choice.</strong> `
-                  + `Exactly one option may appear here`
-                  + (siblings.length ? `. The alternatives are ${siblings.join(", ")}.` : `.`)
-                  + ` Its cardinality applies only when this option is the one used. It does not mean the element is required alongside the others.</div>`;
+            const atLeastOne = !(data.groupCardinality || "").startsWith("[0");
+            if (data.choiceRepeatable) {
+                html += `<div class="choice-note"><strong>This element is one option of a repeatable choice.</strong> `
+                      + `Any of the options may appear, in any order and as often as needed`
+                      + (siblings.length ? `; the other options are ${siblings.join(", ")}` : ``)
+                      + `. None of them is required on its own`
+                      + (atLeastOne ? `; only at least one of them must be present.` : `.`)
+                      + `</div>`;
+            } else {
+                html += `<div class="choice-note"><strong>This element is one option of a choice.</strong> `
+                      + (atLeastOne ? `Exactly one option must appear here` : `At most one option may appear here`)
+                      + (siblings.length ? `. The alternatives are ${siblings.join(", ")}.` : `.`)
+                      + ` This element is therefore not required on its own.</div>`;
+            }
+        }
+
+        // Effective vs declared cardinality.
+        if (data.declaredCardinality) {
+            html += `<div class="card-note">The element itself declares ${data.declaredCardinality}. `
+                  + `Shown is the effective cardinality <strong>${data.cardinality}</strong>, which also takes the enclosing `
+                  + (data.compositor === "choice" ? `choice` : `group`)
+                  + (data.groupCardinality ? ` (occurring ${data.groupCardinality})` : ``)
+                  + ` into account.</div>`;
+        }
+
+        // Certified vs informative values: the switch is @isCertified on a properties block.
+        const isCertSwitch = (data.attributes || []).some(a => a.name === "isCertified");
+        if (isCertSwitch) {
+            html += `<div class="cert-note"><strong>Certified or informative? This is where it is decided.</strong> `
+                  + `Certified and informative values use the same structure. Each <code>properties</code> block `
+                  + `states its status with <code>@isCertified</code>, and everything inside the block inherits it.`
+                  + `<div class="cert-option"><span class="cert-chip certified">@isCertified="true"</span><br>`
+                  + `<strong>Certified values.</strong> RM certificate only (RMC-002; not allowed in a product information sheet, PIS-001, PIS-003). `
+                  + `Every value needs a measurement uncertainty (RMC-006 to RMC-009) and the certificate a traceability statement (RMC-001).</div>`
+                  + `<div class="cert-option"><span class="cert-chip informative">@isCertified omitted or "false"</span><br>`
+                  + `<strong>Informative values</strong>, for example indicative or additional values. Allowed in both document types; uncertainty optional. `
+                  + `Name the block accordingly, e.g. "Indicative values".</div>`
+                  + `</div>`;
+        } else if ((data.path || "").includes("/propertiesList/properties/")) {
+            html += `<div class="cert-note">Certified or informative is not set here: it is inherited from the `
+                  + `<code>@isCertified</code> attribute of the enclosing <code>properties</code> block.</div>`;
         }
 
         // An abstract element is never written in an instance document. Say so, and name what
@@ -562,10 +660,10 @@ function initSchemaTree() {
 
         html += `<div class="details-desc">${data.description || '<i>No description available.</i>'}</div>`;
 
-        // Best Practice link
+        // Guidance link
         const bpLink = bestPracticeLinks[data.name];
         if (bpLink) {
-            html += `<a href="../${bpLink}" class="bp-link" target="_blank">See Best Practice &rarr;</a>`;
+            html += `<a href="../${bpLink}" class="bp-link" target="_blank">See guidance &rarr;</a>`;
         }
         
         if (data.enumerations && data.enumerations.length > 0) {
@@ -788,12 +886,29 @@ function initSchemaTree() {
                     selectNode(d, d.parent ? d.parent.data : null);
                 });
                 
+            // Mark where certified and informative values are distinguished (@isCertified),
+            // and draw everything that inherits that status with a dashed frame.
+            const isCertSwitch = d => (d.data.attributes || []).some(a => a.name === "isCertified");
+            nodeEnter
+                .classed("cert-switch", isCertSwitch)
+                .classed("cert-inherited", d => !isCertSwitch(d) && (d.data.path || "").includes("/propertiesList/properties/"));
+
             // Draw Box
             nodeEnter.append("rect")
                 .attr("width", nodeWidth)
                 .attr("height", nodeHeight)
                 .attr("y", -nodeHeight/2)
                 .attr("x", 0);
+
+            const certTag = nodeEnter.filter(isCertSwitch).append("g")
+                .attr("transform", `translate(10, ${-nodeHeight/2 - 14})`);
+            certTag.append("rect")
+                .attr("class", "cert-tag-bg")
+                .attr("width", 200).attr("height", 14).attr("rx", 3);
+            certTag.append("text")
+                .attr("class", "cert-tag")
+                .attr("x", 5).attr("y", 10.5)
+                .text("@isCertified: certified | informative");
                 
             // Text: Name
             nodeEnter.append("text")

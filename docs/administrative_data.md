@@ -166,7 +166,7 @@ recipient can tell whether they hold the current one (ISO 33401:2024, §5.2.13).
 !!! danger "Schematron Rule: DRMD-011"
     Every DRMD document **MUST** state a `documentVersion` (ISO 33401:2024, §5.2.13, Mandatory
     for both document profiles). Severity: **Error**. The XSD also requires the element; the rule
-    exists so that a Schematron-only report covers Table 1 in full on its own.
+    exists so that a Schematron-only report covers ISO 33401:2024, Table 1 in full on its own.
 
 A version number, an approval date, or both are acceptable. Whichever form you choose, the value
 must change whenever the content changes.
@@ -412,7 +412,26 @@ A structured contact block essential for requesting value clarifications, handli
 | `dcc:phone` | `dcc:notEmptyStringType` | No | |
 | `dcc:fax` | `dcc:notEmptyStringType` | No | Legacy, but schema-supported |
 | `dcc:link` | `xs:anyURI` | No | Organization website |
-| `dcc:location` | `dcc:locationType` | Yes | Physical address with `countryCode` (ISO 3166-1) recommended |
+| `dcc:location` | `dcc:locationType` | Yes | Postal address. `countryCode` (ISO 3166-1) recommended. See *Address elements* below. |
+
+**Address elements (`dcc:location`).** `dcc:locationType` is a *repeatable choice*: each of its
+elements is **optional**, may be repeated, and may appear in any order. The schema only requires
+that at least one of them is present.
+
+| Element | Typically given | Notes |
+|---------|-----------------|-------|
+| `dcc:street`, `dcc:streetNo` | Yes | |
+| `dcc:postCode`, `dcc:city` | Yes | |
+| `dcc:countryCode` | Yes | Two-letter ISO 3166-1 code, e.g. `DE` |
+| `dcc:postOfficeBox` | Only where used | |
+| `dcc:state` | Only where used | Federal state, province or region |
+| `dcc:further` | Only where needed | Free text, e.g. building or room |
+| `dcc:positionCoordinates` | Optional | Geographic coordinates, e.g. WGS84 |
+
+!!! note "Reading the cardinality in the schema tree"
+    Each address element *declares* `[1..1]` in `dcc.xsd`, but that applies each time the
+    surrounding choice is used, and the choice may be used any number of times. The interactive
+    schema tree therefore shows these elements as `[0..*]`.
 
 ???+ example "Complete Contact XML Example"
 

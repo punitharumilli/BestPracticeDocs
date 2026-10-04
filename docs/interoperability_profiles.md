@@ -117,8 +117,8 @@ Profile C **includes all Profile B requirements**, plus the following:
 
 | Requirement | Description |
 |-------------|-------------|
-| **Embedded Human-Readable Document** | Producers SHOULD include `document` (`dcc:byteDataType`) holding the PDF representation. `fileName`, `mimeType` and `dataBase64` are all required by the type, and they appear in that order after the optional `name` and `description`. |
-| **Embedded Attachments** | Producers MAY embed additional documents (SDS, reports, handling instructions) as `dcc:file` inside relevant `dcc:richContentType` statement elements. |
+| **Embedded Human-Readable Document** | Producers SHOULD include a `document` (`dcc:byteDataType`) holding the PDF representation; if several `document` elements are present, the official RM document comes first. `fileName`, `mimeType` and `dataBase64` are all required by the type, and they appear in that order after the optional `name` and `description`. |
+| **Embedded Attachments** | Producers MAY embed additional documents (SDS, reports, handling instructions) as further `document` elements, or as `dcc:file` inside the relevant `dcc:richContentType` statement elements. |
 | **Digital Signature** | Producers SHOULD include at least one `ds:Signature`. Consumers verifying Profile C in production **MUST** perform cryptographic signature verification (offline XSD stub validation is insufficient). |
 | **Multilingual Completeness** | If multiple languages are used, producers SHOULD apply them consistently across key fields (material name, key statements, main result headings) to avoid partial translations. |
 | **D-SI Strictness** | Profile C documents SHOULD be fully consistent with D-SI unit-string and numeric formatting rules. |

@@ -1,8 +1,8 @@
 # Introduction & Overview
 
-Welcome to the **Best Practice Guidelines** for the **Digital Reference Material Document (DRMD)**.
+Welcome to the **Guidance Document** for the **Digital Reference Material Document (DRMD)**.
 
-This guide provides comprehensive instructions for machine manufacturers, reference material producers, and software developers to ensure consistent, interoperable, and automated handling of DRMD certificates across different platforms.
+This guide provides instructions for reference material producers, resellers, laboratories, machine manufacturers and software developers to ensure consistent, interoperable, and automated handling of DRMD certificates across different platforms.
 
 <style>
 .drmd-acronym-container {
@@ -17,6 +17,8 @@ This guide provides comprehensive instructions for machine manufacturers, refere
     flex-direction: column;
 }
 .drmd-letter-heading {
+    /* The acronym is a proper name. It is marked translate="no" so that the machine translation
+       of the page does not render it word by word. */
     border-bottom: 2px solid #000;
     padding-bottom: 8px;
     margin-bottom: 15px;
@@ -53,7 +55,7 @@ This guide provides comprehensive instructions for machine manufacturers, refere
 
 <div class="drmd-acronym-container">
     <div class="drmd-column">
-        <div class="drmd-letter-heading">
+        <div class="drmd-letter-heading notranslate" translate="no">
             <span class="drmd-big-letter">D</span><span class="drmd-rest-word">igital</span>
         </div>
         <div class="drmd-desc">
@@ -61,7 +63,7 @@ This guide provides comprehensive instructions for machine manufacturers, refere
         </div>
     </div>
     <div class="drmd-column">
-        <div class="drmd-letter-heading">
+        <div class="drmd-letter-heading notranslate" translate="no">
             <span class="drmd-big-letter">R</span><span class="drmd-rest-word">eference</span>
             <span class="drmd-big-letter" style="margin-left: 12px;">M</span><span class="drmd-rest-word">aterial</span>
         </div>
@@ -70,7 +72,7 @@ This guide provides comprehensive instructions for machine manufacturers, refere
         </div>
     </div>
     <div class="drmd-column">
-        <div class="drmd-letter-heading">
+        <div class="drmd-letter-heading notranslate" translate="no">
             <span class="drmd-big-letter">D</span><span class="drmd-rest-word">ocument</span>
         </div>
         <div class="drmd-desc">
@@ -83,40 +85,55 @@ This guide provides comprehensive instructions for machine manufacturers, refere
 
     ISO 33401:2024 is complementary to **ISO 17034:2016**, *General requirements for the competence of reference material producers*: ISO 17034 governs how a producer works, ISO 33401 governs what the resulting document says. Two further standards are referenced where they apply: **ISO Guide 35:2017** for characterisation, homogeneity and stability, and **ISO/IEC Guide 98-3 (GUM)** for the expression of measurement uncertainty.
 
-## The DRMD Ecosystem
+## What the DRMD enables
 
-The DRMD schema transforms static PDF certificates into a machine-readable ecosystem. By moving to structured data, it enables:
+The DRMD schema enables PDF certificates and product information sheets to be represented in a machine-readable manner. This has the following advantages:
 
 - **Automated parsing** without manual data entry.
 - **Seamless LIMS integration** for analytical laboratories.
-- **Standardized data exchange** between producers and end-users.
-- **Regulatory compliance** through structured traceability and uncertainty data.
+- **Standardized data exchange** between producers, resellers and end-users.
 
 ### How it works
 
+The diagram shows the process steps. Who carries out a step is shown by the grouping: the steps on
+the left are usually done by the RM producer, the step on the right usually by the laboratory.
+
 ```mermaid
 graph LR
-    %% Styles
-    classDef producer fill:#e3f2fd,stroke:#0288d1,stroke-width:2px;
-    classDef schema fill:#f3e5f5,stroke:#e65100,stroke-width:2px;
-    classDef user fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+    classDef step fill:#ffffff,stroke:#455a64,stroke-width:1.5px,color:#000;
+    classDef drmd fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px,color:#000;
 
-    P[RM Producer]:::producer -->|Generates XML| XSD[(DRMD Schema &<br>Schematron Validation)]:::schema
-    XSD -->|Validates & Ingests| U[LIMS & Instruments]:::user
+    subgraph RMP["Usually done by the RM producer"]
+        G["XML generation"]:::step --> V["XML validation<br/>(XSD + Schematron)"]:::step
+    end
+    V ==> D[("DRMD")]:::drmd
+    subgraph LAB["Usually done by the laboratory"]
+        A["DRMD application<br/>(e.g. import into LIMS,<br/>instrument software, databases)"]:::step
+    end
+    D --> A
+
+    style RMP fill:#e3f2fd,stroke:#0288d1,color:#000
+    style LAB fill:#e8f5e9,stroke:#2e7d32,color:#000
 ```
+
+!!! note
+    Other stakeholders, such as RM resellers, may also create and apply DRMDs.
 
 ## Target Audience
 
-This best practice guide is designed for multiple stakeholders across the quality infrastructure:
+This guidance document is written for several stakeholders across the quality infrastructure:
 
 === "Machine Manufacturers & Software"
     Developers of LIMS, ELN, and analytical instrument software who need to confidently import, parse, and process DRMD certificates.
 
 === "Reference Material Producers"
-    Organizations certified according to ISO 17034 who generate and distribute DRMD certificates. This guide ensures your output achieves maximum interoperability.
+    RM producers use the DRMD to safeguard maximum interoperability and reach of their documents.
 
-=== "End-Users & Laboratories"
-    Quality control departments and calibration facilities that load DRMD certificates into their systems and require a deep understanding of the certificate structure.
+=== "Laboratories"
+    Laboratories benefit from automatic data entry into their systems: easy and efficient.
+
+=== "RM Resellers"
+    Resellers enjoy the efficient exchange of RM documents and their integration in their databases: efficient and user-friendly.
 
 === "Auditors & Regulators"
     Quality Assurance personnel responsible for verifying data integrity, cryptographic signatures, and maintaining audit trails for compliance.
@@ -125,7 +142,7 @@ This best practice guide is designed for multiple stakeholders across the qualit
 
 ## The four-tier severity model
 
-An XML Schema can check that a document is well formed and structurally complete. It cannot say *"if this is a certificate, then metrological traceability is required"*. XSD 1.0 has no way to make one requirement depend on the value of another element. That conditional logic lives in the companion **Schematron** file, `drmd-business-rules.sch`.
+With an XML Schema one can check if a document is well formed and structurally complete. It cannot be used to express *"if this is a certificate, then metrological traceability is required"*. XSD 1.0 has no way to make one requirement depend on the value of another element. That conditional logic lives in the companion **Schematron** file, `drmd-business-rules.sch`.
 
 Each rule carries a severity that maps directly onto an ISO 33401:2024 requirement level, so a validation report can be read against the standard without interpretation.
 
@@ -147,7 +164,7 @@ Each rule carries a severity that maps directly onto an ISO 33401:2024 requireme
 
 ## How to read this guide
 
-In the following chapters, we will break down the DRMD schema into its **Six Core Containers**, providing you with best-practice examples, XML snippets, and strict rules for implementation:
+In the following chapters, we will break down the DRMD schema into its **Six Core Containers**, with examples, XML snippets and rules for implementation:
 
 1. **Administrative Data**
 2. **Materials**
@@ -165,6 +182,6 @@ Click **Next** below to start with the schema overview and architecture.
 | Repository | Holds |
 |---|---|
 | **Schema** | `drmd.xsd`, `drmd-business-rules.sch`, the vendored supporting schemas, worked examples, the rule test suite, and the validation tools. |
-| **Best practice** (this site) | These guidelines, the interactive schema tree, and the implementation checklists. |
+| **Guidance document** (this site) | This guidance, the interactive schema tree, and the implementation checklists. |
 
 The current specification version is **1.0.0**, the first release.

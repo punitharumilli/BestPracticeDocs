@@ -1,12 +1,12 @@
 # Statements
 
-The **Statements** block (`statements`) contains the human-readable declarations and guidance that accompany a reference material and its certified/informative values. It captures critical normative and operational details in a structured but narrative-friendly way.
+The **Statements** block (`statements`) contains auxiliary, narrative information that accompanies a reference material and its values: mainly operational notes for handling and use of the material, such as intended use, storage and preparation, together with statements such as metrological traceability.
 
 All statement elements are typed as `dcc:richContentType`, allowing multilingual text and optional attachments (PDFs/images) and formulas.
 
 ## Structure at a Glance
 
-The `statements` block enforces a **strict sequential order** of its child elements. The schema requires you to declare them exactly in the sequence shown below to comply with ISO 33401:2024 reporting guidelines.
+The child elements of `statements` must appear in the order shown below. This order is a property of the XML structure only; ISO 33401:2024 does not prescribe an order.
 
 ```mermaid
 graph TD

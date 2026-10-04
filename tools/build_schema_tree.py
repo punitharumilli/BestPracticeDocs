@@ -121,10 +121,29 @@ def pretty_qname(node, qname: str) -> str:
     return f"{PREFIX_FOR.get(uri, uri)}:{local}"
 
 
-def cardinality(node) -> str:
-    lo = node.get("minOccurs", "1")
+def occurs(node):
+    """(minOccurs, maxOccurs) of a particle as integers; None stands for 'unbounded'."""
+    lo = int(node.get("minOccurs", "1"))
     hi = node.get("maxOccurs", "1")
-    return f"[{lo}..{'*' if hi == 'unbounded' else hi}]"
+    return lo, (None if hi == "unbounded" else int(hi))
+
+
+def _times(a, b):
+    """Multiply two maxOccurs values, where None means unbounded."""
+    if a == 0 or b == 0:
+        return 0
+    if a is None or b is None:
+        return None
+    return a * b
+
+
+def format_card(lo, hi) -> str:
+    return f"[{lo}..{'*' if hi is None else hi}]"
+
+
+def cardinality(node) -> str:
+    """The cardinality declared on the element itself."""
+    return format_card(*occurs(node))
 
 
 def simple_type_facets(schemas: SchemaSet, node, type_qname: str):
@@ -180,10 +199,15 @@ def collect_attributes(schemas: SchemaSet, type_node):
 def child_elements(schemas: SchemaSet, type_node, _depth=0):
     """Every element particle inside a complex type, in document order, following extensions.
 
-    Returns (element, compositor) pairs. The compositor is the model group the element sits
-    in ("sequence", "choice" or "all"), which the tree needs in order to say whether siblings
-    appear together or as alternatives. Without it a choice of eight payload types renders as
-    eight required siblings, which is the opposite of what the schema means.
+    Returns one Particle per element. Besides the element it records the model group the
+    element sits in ("sequence", "choice" or "all"), which the tree needs in order to say whether
+    siblings appear together or as alternatives, and the EFFECTIVE cardinality: the element's own
+    minOccurs/maxOccurs combined with those of every enclosing group.
+
+    The effective cardinality is what a reader needs. dcc:locationType, for example, is a choice
+    with maxOccurs="unbounded" whose options each declare [1..1]; shown as declared, city,
+    postOfficeBox and state all look mandatory, when in fact every one of them is optional and
+    repeatable and only "at least one of them" is required.
     """
     if type_node is None or _depth > 6:
         return []
@@ -200,16 +224,44 @@ def child_elements(schemas: SchemaSet, type_node, _depth=0):
     return _particles(schemas, type_node, "sequence")
 
 
-def _particles(schemas: SchemaSet, node, compositor):
+class Particle:
+    """An element particle together with the context of the model group it sits in."""
+
+    def __init__(self, element, compositor, effective, group_id, group_occurs, multi_choice):
+        self.element = element
+        self.compositor = compositor          # "sequence", "choice" or "all"
+        self.effective = effective            # (min, max) after enclosing groups, max None = *
+        self.group_id = group_id              # identifies the model group within the parent type
+        self.group_occurs = group_occurs      # (min, max) of the enclosing group, all levels
+        self.multi_choice = multi_choice      # True when the element is one of several options
+
+
+_GROUP_COUNTER = [0]
+
+
+def _particles(schemas: SchemaSet, node, compositor, outer=(1, 1), group_id=None, multi=False):
     out = []
+    if group_id is None:
+        _GROUP_COUNTER[0] += 1
+        group_id = _GROUP_COUNTER[0]
     for child in node:
         if child.tag is etree.Comment:
             continue
         tag = etree.QName(child).localname
         if tag == "element":
-            out.append((child, compositor))
+            lo, hi = occurs(child)
+            effective = (0 if multi else outer[0] * lo, _times(outer[1], hi))
+            out.append(Particle(child, compositor, effective, group_id, outer, multi))
         elif tag in ("sequence", "choice", "all"):
-            out.extend(_particles(schemas, child, tag))
+            lo, hi = occurs(child)
+            group = (outer[0] * lo, _times(outer[1], hi))
+            options = [c for c in child if c.tag is not etree.Comment
+                       and etree.QName(c).localname in ("element", "sequence", "choice", "group", "any")]
+            # An option of a choice with several options is optional on its own, whatever it
+            # declares: the choice is satisfied by any one of the others.
+            child_multi = multi or (tag == "choice" and len(options) > 1)
+            _GROUP_COUNTER[0] += 1
+            out.extend(_particles(schemas, child, tag, group, _GROUP_COUNTER[0], child_multi))
         elif tag == "group":
             pass  # no named model groups are used in this schema set
     return out
@@ -317,7 +369,8 @@ def rules_for(rules, node_path: str):
 
 
 def build(schemas: SchemaSet, rules, element, path, max_depth, seen_types, depth=0,
-          compositor="sequence"):
+          particle=None):
+    compositor = particle.compositor if particle else "sequence"
     name = element.get("name") or (element.get("ref") or "").split(":")[-1]
     referenced = None
     if element.get("ref"):
@@ -365,7 +418,10 @@ def build(schemas: SchemaSet, rules, element, path, max_depth, seen_types, depth
         "type": pretty_qname(doc_node, type_qname) if type_qname else "complexType",
         "base": base,
         "enumerations": enumerations,
-        "cardinality": cardinality(element),
+        # "cardinality" is the EFFECTIVE cardinality, i.e. how often the element may really
+        # appear once enclosing optional or repeatable groups are taken into account.
+        # "declaredCardinality" is what the element itself says.
+        "cardinality": format_card(*particle.effective) if particle else cardinality(element),
         "compositor": compositor,
         "abstract": is_abstract,
         "substitutions": substitutes,
@@ -376,16 +432,26 @@ def build(schemas: SchemaSet, rules, element, path, max_depth, seen_types, depth
         "children": [],
     }
 
+    # Context fields are written only where they carry information, to keep the JSON small.
+    declared_card = cardinality(element)
+    if declared_card != node["cardinality"]:
+        node["declaredCardinality"] = declared_card
+    if particle and compositor == "choice":
+        node["group"] = particle.group_id
+        node["groupCardinality"] = format_card(*particle.group_occurs)
+        if particle.group_occurs[1] != 1:
+            node["choiceRepeatable"] = True
+
     # Guard against unbounded recursion through recursive types such as ds:Object.
     type_key = pretty_qname(doc_node, type_qname) if type_qname else id(type_node)
     if depth >= max_depth or (type_key and type_key in seen_types):
         return node
 
-    for child, child_compositor in child_elements(schemas, type_node):
+    for particle_ in child_elements(schemas, type_node):
         node["children"].append(
-            build(schemas, rules, child, node_path, max_depth,
+            build(schemas, rules, particle_.element, node_path, max_depth,
                   seen_types | ({type_key} if type_key else set()), depth + 1,
-                  child_compositor)
+                  particle_)
         )
     return node
 

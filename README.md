@@ -1,4 +1,4 @@
-# DRMD Best Practice Guidelines
+# DRMD Guidance Document
 
 The published guidance for the **Digital Reference Material Document (DRMD)**, an XML format for
 reference material certificates and product information sheets, aligned with **ISO 33401:2024**.

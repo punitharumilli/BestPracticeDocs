@@ -3,7 +3,7 @@
 The **Comments and Documents** chapter covers two optional, document-level add-ons that exist at the root of the DRMD structure. They apply to the DRMD as a whole, rather than being nested inside Materials or Properties:
 
 - **`comment`**: A simple free-text note field intended for short, non-structured remarks about the DRMD instance.
-- **`document`**: An embedded binary file container (typically used to attach a PDF rendition of the DRMD/certificate directly inside the XML).
+- **`document`**: A repeatable, embedded binary file container. It is typically used to attach a PDF rendition of the RM document directly inside the XML, and can also hold other documents.
 
 ## Structure at a Glance
 
@@ -14,7 +14,7 @@ graph TD
     ROOT["digitalReferenceMaterialDocument<br/><i>Root</i>"]
     
     ROOT --> C["comment<br/><i>xs:string [0..1]</i>"]
-    ROOT --> D["document<br/><i>dcc:byteDataType [0..1]</i>"]
+    ROOT --> D["document<br/><i>dcc:byteDataType [0..*]</i>"]
     
     D --> FNAME["fileName<br/><i>Required</i>"]
     D --> MTYPE["mimeType<br/><i>Required</i>"]
@@ -84,9 +84,11 @@ A short, document-level free-text note.
 |----------|-------|
 | **Path** | `/drmd:digitalReferenceMaterialDocument/drmd:document` |
 | **Schema Type** | `dcc:byteDataType` |
-| **Cardinality** | **Optional** `[0..1]` |
+| **Cardinality** | **Optional, repeatable** `[0..*]` |
 
-An embedded file container, most commonly used to include a PDF version of the DRMD/certificate in Base64 encoding. This is a **document-level attachment** (applies to the whole DRMD), in contrast to attachments embedded inside specific statement fields via `dcc:richContentType`.
+An embedded file container, most commonly used to include a PDF version of the RM document (certificate or product information sheet) in Base64 encoding. This is a **document-level attachment** (applies to the whole DRMD), in contrast to attachments embedded inside specific statement fields via `dcc:richContentType`.
+
+The element may be repeated. It can also be used for embedding documents other than the RM document, or for several documents, for example the certificate in two languages, or the certification report.
 
 ### 7.3.1 Structure
 
@@ -112,7 +114,8 @@ about an unexpected element, which does not obviously point at ordering.
 
 !!! tip "Best Practices"
     - Use this element to embed the **official human-readable representation** (usually a PDF).
-    - Prefer **one document here** (the canonical one). Put supplementary documents (like SDS or technical drawings) into the relevant `Statements` chapter sections as localized attachments.
+    - When you embed more than one document, put the official RM document **first** and give **every** document a `name` (and, if useful, a `description`) that says what it is, so that software and readers can tell the official rendition apart from the other files.
+    - Where a supplementary document belongs to one statement (for example an SDS with `healthAndSafetyInformation`, or a drawing with the material `description`), attaching it there as a `dcc:file` keeps it next to the text it supports.
     - Ensure the embedded PDF **matches the content and version** of the XML to avoid mismatched revisions.
     - **Consider size/performance:** Base64 encoding increases file size. If the PDF is extremely large, some ecosystems prefer external linking instead of embedding.
 

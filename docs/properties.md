@@ -124,7 +124,7 @@ The `properties` block acts as a "chapter subsection" that groups results into a
 | **description** | `dcc:richContentType` | No | Global contextual definitions applying broadly across nested measurements |
 | **procedures** | `dcc:usedMethodListType` | Conditional | Laboratory methods, hardware systems. Mandatory when applicable (DRMD-014) |
 | **results** | `drmd:resultListType` | Yes | The structured measurement value tables |
-| **measurementMetaData** | `dcc:measurementMetaDataListType`| No | Metadata formalizing institutional confidence, valid periods, etc. |
+| **measurementMetaData** | `dcc:measurementMetaDataListType`| No | Further details pertaining to the measurement data |
 
 ### 5.3.2 Technical Attributes
 
