@@ -307,17 +307,6 @@ hide:
 }
 .cert-chip.certified { background: #2e7d32; color: #fff; }
 .cert-chip.informative { background: #78909c; color: #fff; }
-/* Options of a choice: tag on the box and in the left-hand list */
-.node .choice-tag-bg, .node.selected .choice-tag-bg { fill: #ede7f6; stroke: #673ab7; stroke-width: 1px; }
-.node .choice-tag { fill: #4527a0; font-size: 9.5px; font-weight: 700; text-anchor: end; }
-.node-choice {
-    font-size: 10px;
-    color: #4527a0;
-    background: #ede7f6;
-    border-radius: 3px;
-    padding: 0 3px;
-    margin-left: 3px;
-}
 .node.cert-switch > rect { stroke: #f9a825; stroke-width: 3px; }
 .node .cert-tag-bg, .node.selected .cert-tag-bg { fill: #f9a825; stroke: none; }
 .node .cert-tag { fill: #000; font-size: 9.5px; font-weight: 700; }
@@ -346,10 +335,7 @@ hide:
 ???+ info "How to read the tree"
     **Cardinality** `[min..max]` on every box is exactly what the element declares in the schema it
     comes from: `drmd.xsd`, or for DCC, D-SI and XML Signature elements `dcc.xsd`, `SI_Format.xsd` and
-    `xmldsig-core-schema.xsd`, unchanged. Elements that are **options of a choice** carry a purple
-    **choice** tag, with the choice's own cardinality where it repeats (for example `choice [1..*]` on
-    the parts of an address in `dcc:location`). For an option, the cardinality applies each time that
-    option is chosen; it does not mean the element is required alongside the other options.
+    `xmldsig-core-schema.xsd`, unchanged.
 
     **Certified vs informative values.** Both are written in exactly the same structure. The only
     switch is the `@isCertified` attribute on each `properties` block, highlighted in the tree with a
@@ -756,7 +742,6 @@ function initSchemaTree() {
                 <span class="node-icon">E</span>
                 <span class="node-name">${nodeData.name}</span>
                 ${nodeData.cardinality ? `<span class="node-card">${nodeData.cardinality}</span>` : ''}
-                ${nodeData.compositor === "choice" ? `<span class="node-choice">${nodeData.choiceRepeatable ? `choice ${nodeData.groupCardinality}` : `choice`}</span>` : ''}
                 <span class="node-type">: ${nodeData.type || 'complexType'}</span>
             `;
             li.appendChild(wrapper);
@@ -895,19 +880,6 @@ function initSchemaTree() {
                 .attr("height", nodeHeight)
                 .attr("y", -nodeHeight/2)
                 .attr("x", 0);
-
-            // Options of a choice: purple tag on the top-right edge of the box.
-            const choiceLabel = d => d.data.choiceRepeatable ? `choice ${d.data.groupCardinality}` : "choice";
-            const choiceTag = nodeEnter.filter(d => d.data.compositor === "choice").append("g")
-                .attr("transform", `translate(${nodeWidth - 10}, ${-nodeHeight/2 - 14})`);
-            choiceTag.append("rect")
-                .attr("class", "choice-tag-bg")
-                .attr("x", d => -(choiceLabel(d).length * 5.4 + 10))
-                .attr("width", d => choiceLabel(d).length * 5.4 + 10).attr("height", 14).attr("rx", 3);
-            choiceTag.append("text")
-                .attr("class", "choice-tag")
-                .attr("x", -5).attr("y", 10.5)
-                .text(choiceLabel);
 
             const certTag = nodeEnter.filter(isCertSwitch).append("g")
                 .attr("transform", `translate(10, ${-nodeHeight/2 - 14})`);

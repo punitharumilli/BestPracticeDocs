@@ -429,9 +429,8 @@ that at least one of them is present.
 | `dcc:positionCoordinates` | Optional | Geographic coordinates, e.g. WGS84 |
 
 !!! note "Reading the cardinality in the schema tree"
-    The schema tree shows each address element with `[1..1]`, exactly as declared in `dcc.xsd`,
-    and tags it **choice [1..*]**. The `[1..1]` applies each time that element is chosen; it does
-    not make the element mandatory. The DRMD uses `dcc:locationType` unchanged.
+    The schema tree shows each address element with `[1..1]`, exactly as declared in `dcc.xsd`.
+    The DRMD uses `dcc:locationType` unchanged.
 
 ???+ example "Complete Contact XML Example"
 

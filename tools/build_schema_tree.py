@@ -200,14 +200,13 @@ def child_elements(schemas: SchemaSet, type_node, _depth=0):
     """Every element particle inside a complex type, in document order, following extensions.
 
     Returns one Particle per element. Besides the element it records the model group the
-    element sits in ("sequence", "choice" or "all"), which the tree needs in order to say whether
-    siblings appear together or as alternatives, and the EFFECTIVE cardinality: the element's own
-    minOccurs/maxOccurs combined with those of every enclosing group.
+    element sits in ("sequence", "choice" or "all") and that group's occurrence, which the tree
+    needs in order to say whether siblings appear together or as alternatives.
 
-    The effective cardinality is what a reader needs. dcc:locationType, for example, is a choice
-    with maxOccurs="unbounded" whose options each declare [1..1]; shown as declared, city,
-    postOfficeBox and state all look mandatory, when in fact every one of them is optional and
-    repeatable and only "at least one of them" is required.
+    The cardinality shown in the tree is always the one the element DECLARES in its source schema
+    (drmd.xsd, dcc.xsd, SI_Format.xsd, ...), so that DCC and D-SI elements read exactly as PTB
+    defines them. dcc:locationType, for example, is a choice with maxOccurs="unbounded" whose
+    options each declare [1..1]; the tree shows [1..1] on each option, as in dcc.xsd.
     """
     if type_node is None or _depth > 6:
         return []
@@ -227,19 +226,17 @@ def child_elements(schemas: SchemaSet, type_node, _depth=0):
 class Particle:
     """An element particle together with the context of the model group it sits in."""
 
-    def __init__(self, element, compositor, effective, group_id, group_occurs, multi_choice):
+    def __init__(self, element, compositor, group_id, group_occurs):
         self.element = element
         self.compositor = compositor          # "sequence", "choice" or "all"
-        self.effective = effective            # (min, max) after enclosing groups, max None = *
         self.group_id = group_id              # identifies the model group within the parent type
         self.group_occurs = group_occurs      # (min, max) of the enclosing group, all levels
-        self.multi_choice = multi_choice      # True when the element is one of several options
 
 
 _GROUP_COUNTER = [0]
 
 
-def _particles(schemas: SchemaSet, node, compositor, outer=(1, 1), group_id=None, multi=False):
+def _particles(schemas: SchemaSet, node, compositor, outer=(1, 1), group_id=None):
     out = []
     if group_id is None:
         _GROUP_COUNTER[0] += 1
@@ -249,19 +246,12 @@ def _particles(schemas: SchemaSet, node, compositor, outer=(1, 1), group_id=None
             continue
         tag = etree.QName(child).localname
         if tag == "element":
-            lo, hi = occurs(child)
-            effective = (0 if multi else outer[0] * lo, _times(outer[1], hi))
-            out.append(Particle(child, compositor, effective, group_id, outer, multi))
+            out.append(Particle(child, compositor, group_id, outer))
         elif tag in ("sequence", "choice", "all"):
             lo, hi = occurs(child)
             group = (outer[0] * lo, _times(outer[1], hi))
-            options = [c for c in child if c.tag is not etree.Comment
-                       and etree.QName(c).localname in ("element", "sequence", "choice", "group", "any")]
-            # An option of a choice with several options is optional on its own, whatever it
-            # declares: the choice is satisfied by any one of the others.
-            child_multi = multi or (tag == "choice" and len(options) > 1)
             _GROUP_COUNTER[0] += 1
-            out.extend(_particles(schemas, child, tag, group, _GROUP_COUNTER[0], child_multi))
+            out.extend(_particles(schemas, child, tag, group, _GROUP_COUNTER[0]))
         elif tag == "group":
             pass  # no named model groups are used in this schema set
     return out
@@ -418,10 +408,8 @@ def build(schemas: SchemaSet, rules, element, path, max_depth, seen_types, depth
         "type": pretty_qname(doc_node, type_qname) if type_qname else "complexType",
         "base": base,
         "enumerations": enumerations,
-        # "cardinality" is the EFFECTIVE cardinality, i.e. how often the element may really
-        # appear once enclosing optional or repeatable groups are taken into account.
-        # "declaredCardinality" is what the element itself says.
-        "cardinality": format_card(*particle.effective) if particle else cardinality(element),
+        # Exactly as declared in the source schema (drmd, DCC, D-SI, XMLDSig).
+        "cardinality": cardinality(element),
         "compositor": compositor,
         "abstract": is_abstract,
         "substitutions": substitutes,
@@ -433,9 +421,6 @@ def build(schemas: SchemaSet, rules, element, path, max_depth, seen_types, depth
     }
 
     # Context fields are written only where they carry information, to keep the JSON small.
-    declared_card = cardinality(element)
-    if declared_card != node["cardinality"]:
-        node["declaredCardinality"] = declared_card
     if particle and compositor == "choice":
         node["group"] = particle.group_id
         node["groupCardinality"] = format_card(*particle.group_occurs)
