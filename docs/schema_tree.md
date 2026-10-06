@@ -307,14 +307,16 @@ hide:
 }
 .cert-chip.certified { background: #2e7d32; color: #fff; }
 .cert-chip.informative { background: #78909c; color: #fff; }
-.card-note {
-    background: #fbe9e7;
-    border-left: 4px solid #d84315;
-    padding: 8px 12px;
-    margin: 10px 0 14px 0;
-    border-radius: 0 4px 4px 0;
-    font-size: 0.85em;
-    line-height: 1.5;
+/* Options of a choice: tag on the box and in the left-hand list */
+.node .choice-tag-bg, .node.selected .choice-tag-bg { fill: #ede7f6; stroke: #673ab7; stroke-width: 1px; }
+.node .choice-tag { fill: #4527a0; font-size: 9.5px; font-weight: 700; text-anchor: end; }
+.node-choice {
+    font-size: 10px;
+    color: #4527a0;
+    background: #ede7f6;
+    border-radius: 3px;
+    padding: 0 3px;
+    margin-left: 3px;
 }
 .node.cert-switch > rect { stroke: #f9a825; stroke-width: 3px; }
 .node .cert-tag-bg, .node.selected .cert-tag-bg { fill: #f9a825; stroke: none; }
@@ -342,11 +344,12 @@ hide:
 </style>
 
 ???+ info "How to read the tree"
-    **Cardinality** `[min..max]` on every box is the *effective* cardinality: how often the element may
-    really appear once optional or repeatable groups around it are taken into account. An element that
-    is one option of a choice is therefore shown as optional, and an element inside a repeatable choice
-    (for example the parts of an address in `dcc:location`) as optional and repeatable. Where this
-    differs from what the element itself declares, the details panel shows both.
+    **Cardinality** `[min..max]` on every box is exactly what the element declares in the schema it
+    comes from: `drmd.xsd`, or for DCC, D-SI and XML Signature elements `dcc.xsd`, `SI_Format.xsd` and
+    `xmldsig-core-schema.xsd`, unchanged. Elements that are **options of a choice** carry a purple
+    **choice** tag, with the choice's own cardinality where it repeats (for example `choice [1..*]` on
+    the parts of an address in `dcc:location`). For an option, the cardinality applies each time that
+    option is chosen; it does not mean the element is required alongside the other options.
 
     **Certified vs informative values.** Both are written in exactly the same structure. The only
     switch is the `@isCertified` attribute on each `properties` block, highlighted in the tree with a
@@ -590,8 +593,8 @@ function initSchemaTree() {
         html += `</div>`;
 
         // A choice must never be read as "all of these are required". The cardinality shown is
-        // the effective one (computed by build_schema_tree.py), so an option of a choice is
-        // shown as optional; the note says what the choice as a whole requires.
+        // the one declared in the source schema (as in dcc.xsd); this note says what the choice
+        // as a whole requires and that the option's cardinality applies only when it is chosen.
         if (data.compositor === "choice") {
             const siblings = (selectedParent && selectedParent.children || [])
                 .filter(c => c.compositor === "choice" && c.name !== data.name
@@ -599,27 +602,19 @@ function initSchemaTree() {
                 .map(c => `<code>${c.name}</code>`);
             const atLeastOne = !(data.groupCardinality || "").startsWith("[0");
             if (data.choiceRepeatable) {
-                html += `<div class="choice-note"><strong>This element is one option of a repeatable choice.</strong> `
-                      + `Any of the options may appear, in any order and as often as needed`
+                html += `<div class="choice-note"><strong>This element is one option of a repeatable choice `
+                      + `(choice ${data.groupCardinality}).</strong> `
+                      + `Each time the choice is used, one of its options is written`
                       + (siblings.length ? `; the other options are ${siblings.join(", ")}` : ``)
-                      + `. None of them is required on its own`
-                      + (atLeastOne ? `; only at least one of them must be present.` : `.`)
-                      + `</div>`;
+                      + `. The choice can be used as often as needed, in any order`
+                      + (atLeastOne ? `, and must be used at least once.` : `.`)
+                      + ` The cardinality ${data.cardinality} applies each time this option is chosen.</div>`;
             } else {
                 html += `<div class="choice-note"><strong>This element is one option of a choice.</strong> `
                       + (atLeastOne ? `Exactly one option must appear here` : `At most one option may appear here`)
                       + (siblings.length ? `. The alternatives are ${siblings.join(", ")}.` : `.`)
-                      + ` This element is therefore not required on its own.</div>`;
+                      + ` The cardinality ${data.cardinality} applies when this option is the one chosen.</div>`;
             }
-        }
-
-        // Effective vs declared cardinality.
-        if (data.declaredCardinality) {
-            html += `<div class="card-note">The element itself declares ${data.declaredCardinality}. `
-                  + `Shown is the effective cardinality <strong>${data.cardinality}</strong>, which also takes the enclosing `
-                  + (data.compositor === "choice" ? `choice` : `group`)
-                  + (data.groupCardinality ? ` (occurring ${data.groupCardinality})` : ``)
-                  + ` into account.</div>`;
         }
 
         // Certified vs informative values: the switch is @isCertified on a properties block.
@@ -761,6 +756,7 @@ function initSchemaTree() {
                 <span class="node-icon">E</span>
                 <span class="node-name">${nodeData.name}</span>
                 ${nodeData.cardinality ? `<span class="node-card">${nodeData.cardinality}</span>` : ''}
+                ${nodeData.compositor === "choice" ? `<span class="node-choice">${nodeData.choiceRepeatable ? `choice ${nodeData.groupCardinality}` : `choice`}</span>` : ''}
                 <span class="node-type">: ${nodeData.type || 'complexType'}</span>
             `;
             li.appendChild(wrapper);
@@ -899,6 +895,19 @@ function initSchemaTree() {
                 .attr("height", nodeHeight)
                 .attr("y", -nodeHeight/2)
                 .attr("x", 0);
+
+            // Options of a choice: purple tag on the top-right edge of the box.
+            const choiceLabel = d => d.data.choiceRepeatable ? `choice ${d.data.groupCardinality}` : "choice";
+            const choiceTag = nodeEnter.filter(d => d.data.compositor === "choice").append("g")
+                .attr("transform", `translate(${nodeWidth - 10}, ${-nodeHeight/2 - 14})`);
+            choiceTag.append("rect")
+                .attr("class", "choice-tag-bg")
+                .attr("x", d => -(choiceLabel(d).length * 5.4 + 10))
+                .attr("width", d => choiceLabel(d).length * 5.4 + 10).attr("height", 14).attr("rx", 3);
+            choiceTag.append("text")
+                .attr("class", "choice-tag")
+                .attr("x", -5).attr("y", 10.5)
+                .text(choiceLabel);
 
             const certTag = nodeEnter.filter(isCertSwitch).append("g")
                 .attr("transform", `translate(10, ${-nodeHeight/2 - 14})`);
