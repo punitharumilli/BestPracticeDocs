@@ -1,16 +1,23 @@
+# Builds the guidance document with MkDocs and publishes it on GitHub Pages.
+# Every change on the main branch is published automatically.
+
 name: Deploy MkDocs to GitHub Pages
 
 on:
   push:
     branches:
       - main
+  # Allows a manual run from the Actions tab
   workflow_dispatch:
 
+# Each action is pinned to an exact, reviewed commit, so a changed tag upstream cannot change
+# what runs here. The token can only read the repository and publish the site.
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# Only one publication at a time; a running publication is never cancelled.
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -20,21 +27,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
-          python-version: "3.x"
+          python-version: "3.13"
 
-      - name: Cache pip
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-
+      # requirements.txt pins every package, so the build always uses the tested versions.
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --no-cache-dir -r requirements.txt
 
       # mkdocs.yml sets strict: true, so a broken internal link or a missing nav
       # file fails the build here instead of being published.
@@ -42,7 +46,7 @@ jobs:
         run: mkdocs build
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: site/
 
@@ -55,4 +59,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

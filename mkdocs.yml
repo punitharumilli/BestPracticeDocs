@@ -1,7 +1,7 @@
 site_name: Digital Reference Material Document (DRMD)
 site_description: Guidance document for the DRMD XML schema, aligned with ISO 33401:2024
 site_author: BAM, Bundesanstalt für Materialforschung und -prüfung
-site_url: https://punitharumilli.github.io/DRMD_Schema/
+site_url: https://punitharumilli.github.io/BestPracticeDocs/
 
 theme:
   name: material
@@ -20,9 +20,9 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
-  font:
-    text: Inter
-    code: JetBrains Mono
+  # Fonts are served from this site (assets/fonts, assets/css/fonts.css): with a font name here the
+  # theme would load them from Google Fonts, which sends every reader's address to Google.
+  font: false
   features:
     - navigation.instant
     - navigation.tracking
@@ -94,8 +94,12 @@ extra:
       link: "#de"
       lang: de
 
+# Everything the pages load comes from this site; no script, font or style from another server.
 extra_css:
+  - assets/css/fonts.css
   - assets/css/translate.css
 
 extra_javascript:
+  # Mermaid 11.16.1 (MIT), served from this site: the theme would otherwise load it from unpkg.com.
+  - assets/js/mermaid.min.js
   - assets/js/translate.js

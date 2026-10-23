@@ -6,7 +6,7 @@ reference material certificates and product information sheets, aligned with **I
 This repository holds the documentation site only. The schema itself, its validation rules and
 its worked examples live in the companion **schema** repository.
 
-**Published site:** https://punitharumilli.github.io/DRMD_Schema/
+**Published site:** https://punitharumilli.github.io/BestPracticeDocs/
 
 ## Building locally
 
@@ -24,7 +24,7 @@ build rather than being published.
 ```
 best-practice/
 ├── mkdocs.yml                     site configuration and navigation
-├── requirements.txt               pinned build dependencies
+├── requirements.txt               build dependencies, every package pinned
 ├── overrides/main.html            theme override: BAM logo in the sidebar
 ├── tools/
 │   └── build_schema_tree.py       regenerates the interactive tree data from the schema
@@ -36,8 +36,22 @@ best-practice/
     ├── checklists.md              per-role implementation checklists
     ├── schema_tree.md             the interactive D3 schema explorer
     ├── schema_data/schema.json    generated, do not edit by hand
-    └── assets/                    logo, styles, scripts, downloadable checklists
+    └── assets/                    logo, styles, scripts, fonts, downloadable checklists
 ```
+
+## Privacy and security
+
+The site loads nothing from other servers: the fonts (Inter, JetBrains Mono), the diagram library
+(Mermaid 11.16.1) and the library of the schema tree (D3 7.9.0) are served from `docs/assets`.
+Reading the guide therefore sends no visitor data to Google Fonts, unpkg or any other service, and
+no code from another server runs on the site.
+
+The language menu offers a German machine translation by Google Translate. It opens the current page
+on Google's translation address (translate.goog) only when a reader chooses **Deutsch**; nothing
+from Google is loaded into the site itself, and no cookie is set.
+
+The build installs only the exact package versions in `requirements.txt` (tested with Python 3.13),
+and each GitHub Action in the workflow is pinned to a reviewed commit.
 
 ## Keeping the site in step with the schema
 

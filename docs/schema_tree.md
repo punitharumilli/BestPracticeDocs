@@ -369,9 +369,11 @@ hide:
     </div>
 </div>
 
-<!-- Load D3.js -->
-<script src="https://d3js.org/d3.v7.min.js"></script>
+<!-- D3.js 7.9.0 (ISC), served from this site -->
+<script src="../assets/js/d3.min.js"></script>
 <script>
+// Text from the schema is shown as text, never interpreted as HTML.
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 function initResizers() {
     const resizerLeft = document.getElementById('resizer-left');
     const resizerRight = document.getElementById('resizer-right');
@@ -569,11 +571,11 @@ function initSchemaTree() {
         selectedParent = parent || (d.parent && d.parent.data) || findParent(globalData, data) || null;
         
         const panel = document.getElementById("details-panel");
-        let html = `<div class="details-title">${data.name || 'Unnamed Element'}</div>`;
+        let html = `<div class="details-title">${data.name ? esc(data.name) : 'Unnamed Element'}</div>`;
         html += `<div class="badges">`;
-        if (data.type) html += `<span class="badge badge-type">Type: ${data.type}</span>`;
-        if (data.cardinality) html += `<span class="badge badge-cardinality">Cardinality: ${data.cardinality}</span>`;
-        if (data.base) html += `<span class="badge" style="background:#e8f5e9; color:#2e7d32;">Base: ${data.base}</span>`;
+        if (data.type) html += `<span class="badge badge-type">Type: ${esc(data.type)}</span>`;
+        if (data.cardinality) html += `<span class="badge badge-cardinality">Cardinality: ${esc(data.cardinality)}</span>`;
+        if (data.base) html += `<span class="badge" style="background:#e8f5e9; color:#2e7d32;">Base: ${esc(data.base)}</span>`;
         if (data.compositor === "choice") html += `<span class="badge badge-choice">One of a choice</span>`;
         if (data.abstract) html += `<span class="badge badge-abstract">Abstract</span>`;
         html += `</div>`;
@@ -585,21 +587,21 @@ function initSchemaTree() {
             const siblings = (selectedParent && selectedParent.children || [])
                 .filter(c => c.compositor === "choice" && c.name !== data.name
                              && (data.group === undefined || c.group === data.group))
-                .map(c => `<code>${c.name}</code>`);
+                .map(c => `<code>${esc(c.name)}</code>`);
             const atLeastOne = !(data.groupCardinality || "").startsWith("[0");
             if (data.choiceRepeatable) {
                 html += `<div class="choice-note"><strong>This element is one option of a repeatable choice `
-                      + `(choice ${data.groupCardinality}).</strong> `
+                      + `(choice ${esc(data.groupCardinality)}).</strong> `
                       + `Each time the choice is used, one of its options is written`
                       + (siblings.length ? `; the other options are ${siblings.join(", ")}` : ``)
                       + `. The choice can be used as often as needed, in any order`
                       + (atLeastOne ? `, and must be used at least once.` : `.`)
-                      + ` The cardinality ${data.cardinality} applies each time this option is chosen.</div>`;
+                      + ` The cardinality ${esc(data.cardinality)} applies each time this option is chosen.</div>`;
             } else {
                 html += `<div class="choice-note"><strong>This element is one option of a choice.</strong> `
                       + (atLeastOne ? `Exactly one option must appear here` : `At most one option may appear here`)
                       + (siblings.length ? `. The alternatives are ${siblings.join(", ")}.` : `.`)
-                      + ` The cardinality ${data.cardinality} applies when this option is the one chosen.</div>`;
+                      + ` The cardinality ${esc(data.cardinality)} applies when this option is the one chosen.</div>`;
             }
         }
 
@@ -628,9 +630,9 @@ function initSchemaTree() {
             if (data.substitutions && data.substitutions.length) {
                 html += `Use one of its substitutes in its place:</div><ul class="subs-list">`;
                 data.substitutions.forEach(sub => {
-                    html += `<li><code>${sub.name}</code>`
-                          + (sub.type ? ` <span class="subs-type">${sub.type}</span>` : ``)
-                          + (sub.description ? `<div class="subs-desc">${sub.description}</div>` : ``)
+                    html += `<li><code>${esc(sub.name)}</code>`
+                          + (sub.type ? ` <span class="subs-type">${esc(sub.type)}</span>` : ``)
+                          + (sub.description ? `<div class="subs-desc">${esc(sub.description)}</div>` : ``)
                           + `</li>`;
                 });
                 html += `</ul>`;
@@ -639,18 +641,18 @@ function initSchemaTree() {
             }
         }
 
-        html += `<div class="details-desc">${data.description || '<i>No description available.</i>'}</div>`;
+        html += `<div class="details-desc">${data.description ? esc(data.description) : '<i>No description available.</i>'}</div>`;
 
         // Guidance link
         const bpLink = bestPracticeLinks[data.name];
         if (bpLink) {
-            html += `<a href="../${bpLink}" class="bp-link" target="_blank">See guidance &rarr;</a>`;
+            html += `<a href="../${bpLink}" class="bp-link" target="_blank" rel="noopener">See guidance &rarr;</a>`;
         }
         
         if (data.enumerations && data.enumerations.length > 0) {
             html += `<h3>Enumerations</h3><ul>`;
             data.enumerations.forEach(en => {
-                html += `<li><code>${en}</code></li>`;
+                html += `<li><code>${esc(en)}</code></li>`;
             });
             html += `</ul>`;
         }
@@ -658,7 +660,7 @@ function initSchemaTree() {
         if (data.attributes && data.attributes.length > 0) {
             html += `<h3>Attributes</h3><ul>`;
             data.attributes.forEach(attr => {
-                html += `<li><strong>@${attr.name}</strong>: ${attr.type} (${attr.use})<br><i>${attr.description}</i></li>`;
+                html += `<li><strong>@${esc(attr.name)}</strong>: ${esc(attr.type)} (${esc(attr.use)})<br><i>${esc(attr.description)}</i></li>`;
             });
             html += `</ul>`;
         }
@@ -674,7 +676,7 @@ function initSchemaTree() {
                 const sev = SEVERITY[rule.role] || SEVERITY["error"];
                 html += `<div class="rule-card ${sev.card}">
                     <span class="rule-severity ${sev.chip}">${sev.label}</span>
-                    <strong>[${rule.id}]</strong> ${rule.description}
+                    <strong>[${esc(rule.id)}]</strong> ${esc(rule.description)}
                 </div>`;
             });
         }
@@ -740,9 +742,9 @@ function initSchemaTree() {
             
             wrapper.innerHTML = `
                 <span class="node-icon">E</span>
-                <span class="node-name">${nodeData.name}</span>
-                ${nodeData.cardinality ? `<span class="node-card">${nodeData.cardinality}</span>` : ''}
-                <span class="node-type">: ${nodeData.type || 'complexType'}</span>
+                <span class="node-name">${esc(nodeData.name)}</span>
+                ${nodeData.cardinality ? `<span class="node-card">${esc(nodeData.cardinality)}</span>` : ''}
+                <span class="node-type">: ${esc(nodeData.type || 'complexType')}</span>
             `;
             li.appendChild(wrapper);
             
@@ -765,8 +767,8 @@ function initSchemaTree() {
                         attrWrapper.onclick = (e) => { e.stopPropagation(); selectNode(nodeData); };
                         attrWrapper.innerHTML = `
                             <span class="node-icon attr">A</span>
-                            <span class="node-name">@${attr.name}</span>
-                            <span class="node-type">: ${attr.type}</span>
+                            <span class="node-name">@${esc(attr.name)}</span>
+                            <span class="node-type">: ${esc(attr.type)}</span>
                         `;
                         attrLi.appendChild(attrWrapper);
                         childUl.appendChild(attrLi);
