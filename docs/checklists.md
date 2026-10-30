@@ -61,7 +61,7 @@ Everything a published DRMD must satisfy.
       D-SI requires both, and omitting one is an XSD error.
 - [ ] The meaning of the uncertainty is stated once, in the `properties` description: what it
       covers, and at what coverage factor.
-- [ ] Every unit is a D-SI string, `\gram`, not `g`; `\milli\gram\kilo\gram\tothe{-1}`, not
+- [ ] Every unit is a D-SI string, `\gram`, not `g`; `\milli\gram\kilogram\tothe{-1}`, not
       `mg/kg`. *Nothing checks this: `si:unit` is an unrestricted string.*
 - [ ] Any unit D-SI cannot express is reported through `si:hybrid` with an SI-encoded sibling, and
       defined with `dcc:nonSIUnit` and `dcc:nonSIDefinition`.

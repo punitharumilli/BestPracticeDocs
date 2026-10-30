@@ -36,7 +36,7 @@ Unit strings appear in `si:real/si:unit` and in the list variants. They must fol
 | **Identifiers** | Every unit and prefix is an ASCII, lower-case identifier introduced by a backslash: `\metre`, `\gram`, `\micro`. |
 | **Multiplication** | Units are multiplied by writing them one after another: `\newton\metre` is N·m. |
 | **Exponents** | `\tothe{n}` raises the preceding unit to a power. No spaces inside the braces. The exponent may be negative or fractional: `\tothe{2}`, `\tothe{-1}`, `\tothe{0.5}`. |
-| **Division** | There is no division operator. Divide by using a negative exponent: mg/kg is `\milli\gram\kilo\gram\tothe{-1}`. |
+| **Division** | There is no division operator. Divide by using a negative exponent: mg/kg is `\milli\gram\kilogram\tothe{-1}`. |
 | **Decimal separator** | The value in `si:value` uses a dot. A comma is not accepted by the D-SI decimal pattern. |
 
 !!! example "Worked unit strings"
@@ -46,7 +46,7 @@ Unit strings appear in `si:real/si:unit` and in the list variants. They must fol
     | square metre, m² | `\metre\tothe{2}` |
     | kilometre per hour, km/h | `\kilo\metre\hour\tothe{-1}` |
     | pascal written out, kg·m⁻¹·s⁻² | `\kilogram\metre\tothe{-1}\second\tothe{-2}` |
-    | milligram per kilogram, mg/kg | `\milli\gram\kilo\gram\tothe{-1}` |
+    | milligram per kilogram, mg/kg | `\milli\gram\kilogram\tothe{-1}` |
     | percent | `\percent` |
     | dimensionless | `\one` |
 
@@ -78,7 +78,7 @@ convert it to zero or to a missing value.
 | Rule | Detail |
 |---|---|
 | **One prefix per unit** | `\milli\kilo\gram` is invalid: a unit takes at most one prefix. |
-| **Mass is built on `\gram`** | `\kilogram` is a single unit identifier and takes no prefix. Multiples and submultiples of mass are formed from `\gram`: `\milli\gram`, `\mega\gram`. `\kilo\gram` is written as such where it appears in a compound expression; `\kilogram` is the SI base unit identifier. |
+| **Mass is built on `\gram`, except the kilogram** | `\kilogram` is a single unit identifier and takes no prefix. All other multiples and submultiples of mass are formed from `\gram`: `\milli\gram`, `\mega\gram`. The kilogram itself is always written `\kilogram`, also inside a compound unit (mg/kg is `\milli\gram\kilogram\tothe{-1}`): `\kilo\gram` is not permitted (D-SI rule R011, D-SI guide v1.3, p. 72). |
 | **Some units take no prefix** | `\one`, `\percent`, `\degreecelsius`, `\hour`, `\day` and the other time and angle units accepted for use with the SI are used without a prefix. |
 | **Prefix before the unit** | Always `\milli\metre`, never `\metre\milli`. |
 
