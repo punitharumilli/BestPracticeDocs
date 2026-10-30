@@ -23,6 +23,9 @@ build rather than being published.
 
 ```
 best-practice/
+├── LICENSE                        CC BY 4.0, the licence of the text (see "Licence" below)
+├── LICENSES/                      EUPL-1.2 (code) and LGPL-3.0 / GPL-3.0 (schema tree data)
+├── CONTRIBUTING.md                how to report an error or ask for a change
 ├── mkdocs.yml                     site configuration and navigation
 ├── requirements.txt               build dependencies, every package pinned
 ├── overrides/main.html            theme override: BAM logo in the sidebar
@@ -34,6 +37,7 @@ best-practice/
     ├── administrative_data.md     … one chapter per part of the schema
     ├── iso_mapping.md             ISO 33401:2024 Table 1, row by row
     ├── checklists.md              per-role implementation checklists
+    ├── licence.md                 licence of text, code and data; third-party software
     ├── schema_tree.md             the interactive D3 schema explorer
     ├── schema_data/schema.json    generated, do not edit by hand
     └── assets/                    logo, styles, scripts, fonts, downloadable checklists
@@ -75,9 +79,29 @@ updating, and none of them are generated:
 2. `docs/iso_mapping.md`, the ISO 33401:2024 Table 1 mapping.
 3. The `Business Rules Summary` table in whichever chapter covers that part of the schema.
 
+## Changes and contributions
+
+BAM maintains the guidance document. If you find an error or need a change, please tell us instead
+of publishing a changed copy: open an issue in this repository or write to
+[drmd@bam.de](mailto:drmd@bam.de). BAM reviews each request and publishes the change on the site,
+so that everyone works with the same guidance. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Licence
 
-Copyright (c) 2024 Bundesanstalt für Materialforschung und -prüfung (BAM).
-Documentation licensed under the GNU Lesser General Public License v3.0, in line with the schema.
+Copyright (c) 2024 Bundesanstalt für Materialforschung und -prüfung (BAM)
+
+| What | Licence |
+|---|---|
+| The text of the guidance document, its tables and diagrams, and the checklists (`docs/*.md`, `docs/assets/pdfs/`) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), see [`LICENSE`](LICENSE) |
+| The code: the page template (`overrides/`), the scripts and style sheets (`docs/assets/js/translate.js`, `docs/assets/css/`), the script and style sheet embedded in `docs/schema_tree.md`, `tools/build_schema_tree.py` and the workflow in `.github/` | EUPL v1.2, see [`LICENSES/EUPL-1.2.txt`](LICENSES/EUPL-1.2.txt) |
+| `docs/schema_data/schema.json`, generated from the DRMD schema and rules (BAM) and from the DCC and D-SI schemas (Physikalisch-Technische Bundesanstalt, PTB), whose annotations it contains | GNU LGPL v3, see [`LICENSES/LGPL-3.0.txt`](LICENSES/LGPL-3.0.txt) and [`LICENSES/GPL-3.0.txt`](LICENSES/GPL-3.0.txt) |
+| Fonts, Mermaid, D3 (`docs/assets/fonts/`, `docs/assets/js/`) | Their own licences, in the files next to them; see `docs/licence.md` |
+| The BAM name and logo (`docs/assets/BAM_Logo_RGB.jpg`) | Not licensed; they belong to BAM |
+
+CC BY 4.0 lets anyone share and adapt the text, provided they credit BAM, link to the licence and
+say if they changed it; it gives no right to suggest that BAM endorses them. How to credit, the
+licences of the site's third-party software and their texts are on the page
+[Licence & Credits](docs/licence.md), which is also part of the published site.
+
 The development of the Digital Reference Material Document (DRMD) is partially funded and
-supported by the QI-Digital project.
+supported by the [QI-Digital](https://www.qi-digital.de/) project.
