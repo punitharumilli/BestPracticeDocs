@@ -42,6 +42,8 @@ drmd-guidance/
 ├── LICENSES/                      EUPL-1.2 (code) and LGPL-3.0 / GPL-3.0 (schema tree data)
 ├── CONTRIBUTING.md                how to report an error or ask for a change
 ├── LOGO_POLICY.md                 terms for using the DRMD logo
+├── CITATION.cff                   how to cite the guidance document
+├── .zenodo.json                   metadata of the Zenodo record of each release
 ├── mkdocs.yml                     site configuration and navigation
 ├── requirements.txt               build dependencies, every package pinned
 ├── overrides/main.html            theme override: DRMD logo in the sidebar

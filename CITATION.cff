@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: >-
+  If you use the DRMD guidance document, please cite the version you used with the metadata in this
+  file.
+title: "DRMD (Digital Reference Material Document) Guidance Document"
+version: 1.0.0
+license: CC-BY-4.0
+repository-code: "https://github.com/BAMresearch/drmd-guidance"
+url: "https://bamresearch.github.io/drmd-guidance/"
+authors:
+  - family-names: Arumilli
+    given-names: Punith Durga Prasad
+    orcid: "https://orcid.org/0009-0004-1165-9000"
+    affiliation: "Bundesanstalt für Materialforschung und -prüfung (BAM)"
+abstract: >-
+  The guidance document for the Digital Reference Material Document (DRMD), the XML format for
+  reference material certificates and product information sheets aligned with ISO 33401:2024. It
+  explains every element of the DRMD XML Schema 1.0.0, with its business rules and examples, for
+  producers, laboratories, software developers and auditors.
+keywords:
+  - reference materials
+  - ISO 33401
+  - digital certificate
+  - XML Schema
+  - metrology
+  - quality infrastructure
+preferred-citation:
+  type: manual
+  title: "DRMD (Digital Reference Material Document) Guidance Document"
+  version: 1.0.0
+  authors:
+    - family-names: Arumilli
+      given-names: Punith Durga Prasad
+      orcid: "https://orcid.org/0009-0004-1165-9000"
+      affiliation: "Bundesanstalt für Materialforschung und -prüfung (BAM)"
+  publisher:
+    name: "Bundesanstalt für Materialforschung und -prüfung (BAM)"
+  url: "https://bamresearch.github.io/drmd-guidance/"
+  year: 2026
