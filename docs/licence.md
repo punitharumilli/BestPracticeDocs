@@ -18,7 +18,7 @@ that BAM endorses you or your use, and it does not license trademarks.
 **How to credit.** For example:
 
 > DRMD guidance document, © 2024 Bundesanstalt für Materialforschung und -prüfung (BAM),
-> <https://punitharumilli.github.io/BestPracticeDocs/>, licensed under
+> <https://bamresearch.github.io/drmd-guidance/>, licensed under
 > [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 If you changed the material, add that you did, for example "adapted from …".
@@ -27,7 +27,8 @@ The guidance document is provided as is, without warranty of any kind (Section 5
 
 **Not covered by this licence:**
 
-* the name and the logo of BAM;
+* the name of BAM and the DRMD logo: the logo belongs to BAM and may be used only as described in
+  the [Logo Policy](https://github.com/BAMresearch/drmd-guidance/blob/main/LOGO_POLICY.md);
 * standards and other documents that are cited or briefly quoted, such as ISO 33401:2024,
   ISO 17034:2016 and the D-SI guide: they remain under the terms of their publishers;
 * the data of the interactive schema tree and the third-party software listed below, which have

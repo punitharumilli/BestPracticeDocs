@@ -112,7 +112,7 @@ results.
 
 ---
 
-## 11.4 Quantity kinds: saying what was measured
+## 11.4 Quantity kinds: saying what kind of quantity a value is
 
 A unit tells you the dimension. It does not tell you what the number is *about*. `\percent` could
 be a mass fraction, a volume fraction, a recovery, or a relative uncertainty. A consuming system
@@ -168,26 +168,29 @@ Quantity kinds that come up constantly in reference material work:
 
 ## 11.5 Reporting a unit D-SI cannot express
 
-Some fields report results on scales that are not units in the SI sense at all: Brinell hardness,
-IU/mL for a biological activity, degrees Brix, an octane number. D-SI has a defined answer for
-this, and it is **not** to write the unusual unit into `si:unit` and hope.
+Some fields report results in units or on scales that D-SI cannot express directly: Brinell
+hardness, degrees Brix, an activity in international units, an octane number. The answer is
+**not** to write the unusual unit into `si:unit` and hope: a D-SI consumer cannot read it.
 
-**Use `si:hybrid`.** A hybrid carries the same quantity more than once, in different units. At
-least one `si:real` inside it must give the value in a machine-readable SI unit; the others may
-use any unit at all. The SI sibling is what keeps the value computable; the other preserves the
-form the field expects.
+**Where the value can be converted to an SI unit, use `si:hybrid`.** A hybrid carries the same
+quantity more than once, in different units. One `si:real` inside it gives the value converted to
+a machine-readable SI unit, as the D-SI guide describes; a sibling `si:real` gives it in the
+conventional unit. The SI sibling is what keeps the value computable; the other preserves the form
+the field expects. For a conventional scale whose value is computed from SI quantities, such as
+Brinell hardness (computed from the test force and the area of the indentation), the SI sibling
+gives that quantity, and `dcc:nonSIDefinition` states the relation.
 
 ```xml
 <drmd:quantity id="q_hardness">
   <dcc:name><dcc:content lang="en">Hardness HBW 2.5/62.5</dcc:content></dcc:name>
   <si:hybrid>
     <si:real>
-      <si:label>Brinell hardness, expressed in SI units</si:label>
+      <si:label>Test force per surface area of the indentation (F/A in N/mm² = HBW/0.102)</si:label>
       <si:value>1.03e9</si:value>
       <si:unit>\pascal</si:unit>
     </si:real>
     <si:real>
-      <si:label>Brinell hardness, expressed in the conventional hardness scale</si:label>
+      <si:label>Brinell hardness on the conventional HBW scale</si:label>
       <si:value>105</si:value>
       <si:unit>HBW 2.5/62.5</si:unit>
     </si:real>
@@ -206,17 +209,30 @@ form the field expects.
     </dcc:name>
     <dcc:nonSIDefinition>Brinell hardness measured with a 2.5 mm tungsten carbide ball at a
       test force of 62.5 kgf (612.9 N), reported on the conventional HBW scale as defined in
-      ISO 6506-1. The SI-encoded sibling quantity states the same result in pascal.</dcc:nonSIDefinition>
+      ISO 6506-1. The hardness number is 0.102 times the test force in newton divided by the
+      surface area of the indentation in square millimetres. The SI sibling gives this force
+      per area in pascal (105 HBW corresponds to 1.03 GPa), as the hybrid form of D-SI
+      requires; it is not a different hardness value.</dcc:nonSIDefinition>
     <dcc:nonSIUnit>HBW 2.5/62.5</dcc:nonSIUnit>
   </dcc:metaData>
 </drmd:measurementMetaData>
 ```
+
+**Where there is no conversion to an SI unit.** Some values are read on a conventional reference
+scale with no unit at all, such as a Rockwell hardness or an octane number (the VIM calls these
+ordinal quantities), or are expressed in a unit defined by a reference material, such as an
+international unit that is not related to a mass. D-SI has no machine-readable form for these, and
+`si:hybrid` does not apply, because there is no SI value to give. Use `dcc:noQuantity` and state
+in its text the value, the scale or unit and, for a certified value, the uncertainty. The
+certified-value rules do not check values given as text, so check yourself that the uncertainty
+is stated.
 
 !!! tip "Choosing the right mechanism"
     | Situation | What to use |
     |---|---|
     | Unit is in the SI, or accepted for use with it | `si:real` with a D-SI `si:unit`. Nothing else needed. |
     | Unit is conventional or field-specific, but the quantity has an SI equivalent | `si:hybrid`: one SI-encoded `si:real`, one in the conventional unit, plus `dcc:nonSIUnit` / `dcc:nonSIDefinition` in the metadata. |
+    | A conventional scale or unit with no SI equivalent (an octane number, a Rockwell hardness) | `dcc:noQuantity`, with the value, the scale and any uncertainty in the text. |
     | The property is genuinely not numeric (an identity, a class, a pass/fail) | `dcc:noQuantity` with an explanation, or `dcc:charsXMLList` for a token list. |
     | The quantity kind is unclear from the unit alone | Add `si:quantityTypeQUDT`. This applies in every case above where a D-SI quantity is used. |
 
@@ -233,11 +249,16 @@ For `si:real`, the uncertainty is an optional choice of three elements. Only the
 | `si:coverageInterval` | Deprecated in D-SI. Accepted for backward compatibility. |
 
 !!! danger "Schematron: certified values must carry uncertainty"
-    In a `referenceMaterialCertificate`, every quantity inside a `properties` block with
-    `@isCertified="true"` must include one of those three elements. Four rules cover the four
-    encodings: **RMC-006** (`si:real` directly under `data`), **RMC-007** (`si:real` inside a
-    `list`), **RMC-008** (`si:realListXMLList`), **RMC-009** (every `si:real` nested in an
-    `si:hybrid`). All four are hard errors.
+    In a `referenceMaterialCertificate`, every single `si:real` inside a `properties` block with
+    `@isCertified` `"true"` (or `"1"`) must include one of those three elements. Inside an
+    `si:realList`, an uncertainty for the whole list also counts, and the element for each value
+    is spelled `si:measurementUncertaintyUnivaraite` in D-SI 2.2.1. The other numeric forms have
+    their own uncertainty elements (`si:complex`, `si:constant`, `si:realListXMLList`,
+    `si:complexListXMLList`); [Properties](properties.md#5111-sireal) lists them. Four
+    rules cover where the value sits: **RMC-006** (directly under `data`), **RMC-007** (inside a
+    `list`), **RMC-008** (`si:realListXMLList` and `si:complexListXMLList`, single or in a `list`),
+    **RMC-009** (every number nested in an `si:hybrid`, single or in a `list`). All four are hard
+    errors.
 
 ### 11.6.1 What goes inside
 

@@ -12,7 +12,7 @@
         return h.length > PROXY.length && h.slice(-PROXY.length) === PROXY;
     }
 
-    // punitharumilli-github-io.translate.goog → punitharumilli.github.io
+    // bamresearch-github-io.translate.goog → bamresearch.github.io
     // (Google writes the dots of the host as "-", and a "-" of the host as "--").
     function originalUrl() {
         var label = window.location.hostname.slice(0, -PROXY.length);

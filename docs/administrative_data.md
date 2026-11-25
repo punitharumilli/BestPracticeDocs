@@ -47,10 +47,10 @@ The three pillars are:
 |--------|------|------|----------|
 | **Core Data** | `coreData` | `drmd:coreDataType` | Mandatory |
 | **Reference Material Producer** | `referenceMaterialProducer` | `drmd:referenceMaterialProducerType` | Mandatory |
-| **Responsible Persons** | `respPersons` | `dcc:respPersonListType` | CRM: Mandatory / PIS: Optional |
+| **Responsible Persons** | `respPersons` | `dcc:respPersonListType` | RMC: Mandatory / PIS: Optional |
 
 !!! warning "Dual Validation Required"
-    The DRMD schema uses a **dual-profile architecture**. The XSD defines the structure, but profile-specific mandatory requirements (e.g., `respPersons` for CRM documents) are enforced by the companion **Schematron business rules** (`drmd-business-rules.sch`). Full compliance requires passing **both** validations.
+    DRMD documents are validated in two steps. The XSD defines the structure, but the requirements that depend on the document type (e.g., `respPersons` in a reference material certificate) are enforced by the companion **Schematron business rules** (`drmd-business-rules.sch`). Full compliance requires passing **both** validations.
 
 
 ## 3.1 Core Data (`coreData`)
@@ -85,36 +85,40 @@ graph LR
 
 **Purpose:** A mandatory classification that defines the **metrological level** of the document. It tells analytical instrument software how to weigh the data contained within.
 
-???+ info "Understanding the Two Document Profiles"
+???+ info "Understanding the Two Document Types"
 
-    The `titleOfTheDocument` value drives the entire validation behavior of the DRMD. Choosing the wrong profile can lead to validation failures or, worse, incorrect interpretation of measurement data.
+    The `titleOfTheDocument` value drives the entire validation behavior of the DRMD. Choosing the wrong document type can lead to validation failures or, worse, incorrect interpretation of measurement data.
 
-    === "referenceMaterialCertificate (CRM)"
+    === "referenceMaterialCertificate (RMC)"
 
-        - Identifies a **Certified Reference Material** per ISO 33401:2024
-        - Values are **certified** with full traceability and uncertainty budgets
-        - Downstream data systems treat properties as suitable for **calibration**
+        - Accompanies a **certified reference material** (ISO 33401:2024, 3.2)
+        - Each certified value comes with its measurement uncertainty and its metrological
+          traceability
+        - Software can rely on every numeric certified value carrying an uncertainty
         - **Additional mandatory requirements** are activated via Schematron:
-            - `respPersons` with approving officer (RMC-010)
             - `metrologicalTraceability` statement (RMC-001)
             - At least one `properties` block with `@isCertified="true"` (RMC-002)
+            - An uncertainty for every numeric certified value (RMC-006 to RMC-009)
+            - `respPersons` with the approving officer (RMC-010), at least one of them with a
+              function (RMC-012)
             - Material `description` (RMC-011)
 
-    === "productInformationSheet"
+    === "productInformationSheet (PIS)"
 
-        - Identifies an informative **Reference Material** per ISO 33401:2024
-        - Values are valid measurement results but **not certified**
-        - Should **not** be used as a primary anchor for calibration
+        - Accompanies any other **reference material** (ISO 33401:2024, 3.3)
+        - Property values can be measured, assigned or nominal values; they are **not certified**
+        - An uncertainty and a statement of traceability may be given, and are good practice
         - Fewer mandatory requirements, `respPersons` is optional
-        - `@isCertified` MUST NOT be set to `"true"` (PIS-001)
+        - No `properties` block may be marked certified with `@isCertified` `"true"` or `"1"`
+          (PIS-001, PIS-003)
 
 **XML Examples:**
 
 ```xml
-<!-- For a Certified Reference Material (CRM) -->
+<!-- For a reference material certificate (the material is a CRM) -->
 <drmd:titleOfTheDocument>referenceMaterialCertificate</drmd:titleOfTheDocument>
 
-<!-- For an informative Reference Material (RM) -->
+<!-- For a product information sheet (any other RM) -->
 <drmd:titleOfTheDocument>productInformationSheet</drmd:titleOfTheDocument>
 ```
 
@@ -161,11 +165,11 @@ collisions across systems and lets a LIMS tell one revision from another.
 | **Cardinality** | **Required** `[1..1]` |
 
 **Purpose:** A mandatory version string identifying the revision of this document, so that a
-recipient can tell whether they hold the current one (ISO 33401:2024, §5.2.13).
+recipient can tell whether they hold the current one (ISO 33401:2024, 5.2.13).
 
 !!! danger "Schematron Rule: DRMD-011"
-    Every DRMD document **MUST** state a `documentVersion` (ISO 33401:2024, §5.2.13, Mandatory
-    for both document profiles). Severity: **Error**. The XSD also requires the element; the rule
+    Every DRMD document **MUST** state a `documentVersion` (ISO 33401:2024, 5.2.13, Mandatory
+    for both document types). Severity: **Error**. The XSD also requires the element; the rule
     exists so that a Schematron-only report covers ISO 33401:2024, Table 1 in full on its own.
 
 A version number, an approval date, or both are acceptable. Whichever form you choose, the value
@@ -251,10 +255,10 @@ Each `documentIdentifier` contains:
 | **Type** | `drmd:ValidityType` |
 | **Cardinality** | **Required** `[1..1]` |
 
-**Purpose:** A mandatory **choice** that establishes the operational lifespan of the certificate. Producers must select **exactly one** of three methods. Instruments match this data block against real-time evaluation dates to automatically lock out expired materials.
+**Purpose:** The period of validity of the reference material (ISO 33401:2024, 5.2.8): the time during which the producer states that the material is fit for its intended use. It is a mandatory **choice** of exactly one of three forms. Software can compare it with the current date, for example to warn before an expired material is used.
 
 !!! danger "Schematron Rule: DRMD-012"
-    Every DRMD document **MUST** specify a validity period or condition (ISO 33401:2024, §5.2.8). Severity: **Error**.
+    Every DRMD document **MUST** specify a validity period or condition (ISO 33401:2024, 5.2.8). Severity: **Error**.
 
 ```mermaid
 graph TD
@@ -268,7 +272,7 @@ graph TD
     VAL -->|Option 3| UR
 
     TAD --> DD["dispatchDate<br/><i>xs:date [0..1]</i>"]
-    TAD --> PER["period<br/><i>xs:duration [1..1]</i>"]
+    TAD --> PER["period<br/><i>non-negative xs:duration [1..1]</i>"]
 
     style VAL fill:#e8eaf6,color:#000,stroke:#3f51b5
     style ST fill:#fff3e0,stroke:#ff9800
@@ -278,7 +282,7 @@ graph TD
 
 === "specificTime (Fixed Expiration)"
 
-    A hard expiration date using the `YYYY-MM-DD` format. Provides a **"Hard Stop"** for safety, automated instruments compare this to the current date and **lock out** the material if expired.
+    A fixed end date of validity in the `YYYY-MM-DD` format. After this date the producer no longer guarantees the stated property values; software can compare the date with the current date and warn before an expired material is used.
 
     ```xml
     <drmd:validity>
@@ -288,7 +292,7 @@ graph TD
 
 === "timeAfterDispatch (Relative Validity)"
 
-    A dynamic duration defined by an optional `dispatchDate` and a mandatory ISO 8601 `period` (e.g., `P3Y` for 3 years). Accommodates materials where shelf-life only begins once shipped. Systems parse the period to **automatically calculate** a unique expiration date.
+    Validity counted from the date a unit is dispatched: an optional `dispatchDate` and a mandatory `period`, an XML Schema duration (the subset of ISO 8601 durations defined by `xs:duration`, e.g., `P3Y` for 3 years). Negative durations are not permitted. Software adds the period to the dispatch date to obtain the end of validity of an individual unit.
 
     !!! note "Policy Option"
         If DRMD's legal issuance is defined as the act of signing (not printing/dispatching), set `dispatchDate` to the date of the signing event. Only do this when signing time is explicitly your issuance time by regulation/process.
@@ -304,7 +308,7 @@ graph TD
 
 === "untilRevoked (Permanent Until Notice)"
 
-    A boolean element fixed to the value `true`. Used for inherently stable materials that do not require a predetermined expiration date. The certificate remains active until a **revocation or updated version** is issued.
+    A boolean element fixed to the value `true`. The stated property values stay valid until the producer revokes them, without a fixed end. Suitable for inherently stable materials, whose property values are not expected to change.
 
     ```xml
     <drmd:validity>
@@ -321,10 +325,10 @@ graph TD
 | **Type** | `drmd:referenceMaterialProducerType` |
 | **Cardinality** | **Required** `[1..1]` |
 
-This block identifies the organization **legally and operationally responsible** for producing (or issuing) the reference material and its documentation (e.g., BAM, NIST, IRMM).
+This block identifies the organization **legally and operationally responsible** for producing (or issuing) the reference material and its documentation (e.g., BAM, NIST, JRC).
 
 !!! danger "Schematron Rule: DRMD-010"
-    Every DRMD document **MUST** identify the `referenceMaterialProducer` (ISO 33401:2024, §5.2.5). Severity: **Error**.
+    Every DRMD document **MUST** identify the `referenceMaterialProducer` (ISO 33401:2024, 5.2.5). Severity: **Error**.
 
 ```mermaid
 graph TD
@@ -564,25 +568,25 @@ Each `organizationIdentifier` contains: `scheme` (Required), `value` (Required),
 |----------|-------|
 | **Path** | `.../administrativeData/drmd:respPersons` |
 | **Type** | `dcc:respPersonListType` (imported from DCC schema) |
-| **Cardinality** | CRM: **Mandatory** / ProductInformationSheet: **Optional** `[0..1]` |
+| **Cardinality** | RMC: **Mandatory** / PIS: **Optional** `[0..1]` |
 
 The **Responsible Persons** block records the human (or organizational) accountability for the DRMD: who prepared it, who approved it, and who is authorized to perform electronic signatures.
 
 !!! danger "Schematron Rules: RMC-010 and RMC-012"
-    ISO 33401:2024, §5.3.5 requires the **name and function** of the officer representing the RM
-    producer and accepting responsibility for the contents of the certificate. Both halves are
-    required, and two rules cover them:
+    ISO 33401:2024, 5.3.5 requires the **name and function** of the RM producer's approving officer,
+    the person who takes responsibility for the content of the certificate on behalf of the
+    producer. Both halves are required, and two rules cover them:
 
     * **RMC-010** (Error): a Reference Material Certificate MUST have a `respPersons` list.
     * **RMC-012** (Error): at least one `dcc:respPerson` in it MUST state a `dcc:role`, which is
       the officer's function. `dcc:role` is optional in the DCC schema, so without this rule a
       certificate could name someone with no indication of their authority to approve it.
 
-    Neither rule applies to `productInformationSheet` documents, where §5.3.5 is Optional.
+    Neither rule applies to `productInformationSheet` documents, where 5.3.5 is Optional.
 
-    The NOTE to §5.3.5 allows the officer's name to be the name of the responsible organisation,
-    so a role naming the unit rather than a personal job title, `Head of Division, Inorganic
-    Reference Materials`, satisfies the requirement.
+    The note to 5.3.5 allows the name to be that of the responsible organisation, for example a
+    certification committee. The function is still required, for example `Head of Division,
+    Inorganic Reference Materials`.
 
 ```mermaid
 graph TD
@@ -724,8 +728,8 @@ The following Schematron business rules apply specifically to the **Administrati
 | **DRMD-010** | All documents | Error | Must identify `referenceMaterialProducer` |
 | **DRMD-012** | All documents | Error | Must specify a `validity` period or condition |
 | **DRMD-011** | All documents | Error | Must state a `documentVersion` |
-| **RMC-010** | CRM only | Error | Must list `respPersons`, naming the approving officer |
-| **RMC-012** | CRM only | Error | At least one responsible person must state a function (`dcc:role`) |
+| **RMC-010** | RMC only | Error | Must include `respPersons`, the list of responsible persons with the approving officer |
+| **RMC-012** | RMC only | Error | At least one responsible person must state a function (`dcc:role`) |
 
 !!! info "Validation Pipeline"
     ```

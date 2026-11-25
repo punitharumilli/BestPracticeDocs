@@ -33,7 +33,7 @@ graph TD
 ```
 
 !!! note "Validation Context"
-    Because these elements are fundamentally optional and act as supplementary metadata, there are no strict Schematron business rules that mandate their presence in either the CRM or PIS document profiles. 
+    Because these elements are fundamentally optional and act as supplementary metadata, there are no strict Schematron business rules that mandate their presence in either document type (reference material certificate or product information sheet). 
 
 ---
 

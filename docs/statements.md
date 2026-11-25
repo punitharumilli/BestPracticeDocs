@@ -16,7 +16,7 @@ graph TD
     S --> COM["commutability<br/><i>Conditional</i>"]
     S --> SI["storageInformation<br/><i>Required</i>"]
     S --> IHAU["instructionsForHandlingAndUse<br/><i>Required</i>"]
-    S --> MT["metrologicalTraceability<br/><i>CRM: Required</i>"]
+    S --> MT["metrologicalTraceability<br/><i>RMC: Required</i>"]
     S --> HSI["healthAndSafetyInformation<br/><i>Recommended</i>"]
     S --> SUB["subcontractors<br/><i>Optional</i>"]
     S --> LN["legalNotice<br/><i>Optional</i>"]
@@ -37,7 +37,7 @@ graph TD
 ```
 
 !!! warning "Dual Validation Required"
-    The DRMD schema uses a dual-profile architecture. Profile-specific mandatory requirements (e.g., `metrologicalTraceability` being mandatory for CRM documents) and conditional checks (e.g., `commutability`) are enforced by the companion **Schematron business rules** (`drmd-business-rules.sch`).
+    DRMD documents are validated in two steps. The XSD defines the structure; the requirements that depend on the document type (e.g., `metrologicalTraceability`, mandatory in a reference material certificate) and conditional checks (e.g., `commutability`) are enforced by the companion **Schematron business rules** (`drmd-business-rules.sch`).
 
 ---
 
@@ -81,7 +81,7 @@ All statement fields share the same underlying structure (`dcc:richContentType`)
 Explains what the RM is intended (and typically not intended) to be used for. Helps labs determine fitness for purpose.
 
 !!! danger "Schematron Rule: DRMD-004"
-    Every DRMD **MUST** include an `intendedUse` statement (ISO 33401:2024, §5.2.6).
+    Every DRMD **MUST** include an `intendedUse` statement (ISO 33401:2024, 5.2.6).
 
 ```xml
 <drmd:intendedUse>
@@ -101,15 +101,15 @@ Explains what the RM is intended (and typically not intended) to be used for. He
 Provides commutability information (whether the RM behaves like real samples across methods). Especially relevant for clinical/biological materials.
 
 !!! warning "Schematron Rule: DRMD-013, Conditional Error"
-    `commutability` is **Mandatory whenever applicable** (ISO 33401:2024, §5.2.9), for both
+    `commutability` is **Mandatory whenever applicable** (ISO 33401:2024, 5.2.9), for both
     document types.
 
     If commutability was not assessed, **say so in the element** rather than omitting it. An
     explicit statement clears the rule and tells the reader something they need to know; an absent
-    element cannot be distinguished from an oversight. ISO 33401:2024, §5.2.9 asks that the
-    information be sufficient for a user to judge whether the material is appropriate for their
-    particular use without further qualification, a sentence saying it was not assessed, and what
-    that restricts, meets that.
+    element cannot be distinguished from an oversight. ISO 33401:2024, 5.2.9 asks for enough
+    information for users to decide whether they can use the material as it is or must first
+    qualify it themselves; a sentence saying that commutability was not assessed, and what that
+    restricts, gives them that.
 
 ```xml
 <drmd:commutability>
@@ -128,7 +128,7 @@ Provides commutability information (whether the RM behaves like real samples acr
 Storage conditions needed to maintain material integrity and validity of certified values. Provide actionable ranges/conditions.
 
 !!! danger "Schematron Rule: DRMD-005"
-    Every DRMD **MUST** include `storageInformation` (ISO 33401:2024, §5.2.10).
+    Every DRMD **MUST** include `storageInformation` (ISO 33401:2024, 5.2.10).
 
 ```xml
 <drmd:storageInformation>
@@ -147,7 +147,7 @@ Storage conditions needed to maintain material integrity and validity of certifi
 Instructions to ensure correct use: preparation, surface cleaning, and minimum sample size references.
 
 !!! danger "Schematron Rule: DRMD-006"
-    Every DRMD **MUST** include `instructionsForHandlingAndUse` (ISO 33401:2024, §5.2.11).
+    Every DRMD **MUST** include `instructionsForHandlingAndUse` (ISO 33401:2024, 5.2.11).
 
 ```xml
 <drmd:instructionsForHandlingAndUse>
@@ -160,21 +160,21 @@ Instructions to ensure correct use: preparation, surface cleaning, and minimum s
 
 ### 6.3.5 Metrological Traceability (`metrologicalTraceability`)
 
-| Cardinality | CRM: Required / PIS: Optional (`[0..1]`) |
+| Cardinality | RMC: Required / PIS: Optional (`[0..1]`) |
 |-------------|------------------------------------------|
 
 Narrative traceability statement(s) linking the certified values back to the SI, reference standards, or calibration chains.
 
 !!! danger "Schematron Rule: RMC-001"
-    Reference Material Certificates (CRM profile) **MUST** include a `metrologicalTraceability` statement (ISO 33401:2024, §5.3.4).
+    Reference material certificates **MUST** include a `metrologicalTraceability` statement (ISO 33401:2024, 5.3.4).
 
-ISO 33401:2024, §5.3.4 asks for two things in particular, and both must be identifiable:
+ISO 33401:2024, 5.3.4 asks for two things in particular, and both must be identifiable:
 
-* **a clear specification of the measurand**: what exactly was measured;
-* **the reference to which the property value is made traceable.**
+* **the measurand, clearly specified**: what exactly was measured;
+* **the reference to which each certified value is traceable.**
 
-It also says the certificate should list the measurement method used for each certified value.
-"Traceable to the SI" on its own does not satisfy §5.3.4: name the reference.
+It also recommends naming the measurement method of each certified value.
+"Traceable to the SI" on its own does not satisfy 5.3.4: name the reference.
 
 ```xml
 <drmd:metrologicalTraceability>
@@ -196,7 +196,7 @@ It also says the certificate should list the measurement method used for each ce
 Safety guidance, hazard statements, and PPE requirements. Often includes an attached Safety Data Sheet (SDS).
 
 !!! tip "Schematron Rule: DRMD-015"
-    It is **Recommended** (Warning) to include `healthAndSafetyInformation` for both CRM and PIS profiles.
+    It is **Recommended** (Warning) to include `healthAndSafetyInformation` in both document types.
 
 ```xml
 <drmd:healthAndSafetyInformation>
@@ -324,7 +324,10 @@ The following Schematron rules govern the Statements section:
 | **DRMD-006** | All documents | Error | `instructionsForHandlingAndUse` is mandatory |
 | **DRMD-013** | All documents | Conditional Error | `commutability` is mandatory whenever applicable |
 | **DRMD-015** | All documents | Warning | `healthAndSafetyInformation` should be included |
-| **RMC-001** | CRM only | Error | `metrologicalTraceability` is mandatory |
+| **RMC-001** | RMC only | Error | `metrologicalTraceability` is mandatory |
+
+A statement counts as present only when it has text in `dcc:content`, a `dcc:file` or a
+`dcc:formula`. A heading (`dcc:name`) alone does not satisfy these rules.
 
 ```mermaid
 graph LR
@@ -337,7 +340,7 @@ graph LR
     DOC -->|"DRMD-013"| COM["commutability<br/><i>when applicable</i>"]
     DOC -.->|"DRMD-015"| HSI["healthAndSafetyInformation<br/><i>Recommended</i>"]
     
-    DOC -.->|"RMC-001<br/><i>CRM only</i>"| MT["metrologicalTraceability"]
+    DOC -.->|"RMC-001<br/><i>RMC only</i>"| MT["metrologicalTraceability"]
 
     style DOC fill:#e8eaf6,color:#000,stroke:#283593
     style IU fill:#ffebee,color:#000,stroke:#f44336

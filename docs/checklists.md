@@ -84,10 +84,12 @@ Everything a published DRMD must satisfy.
 
 ### E. Before you publish
 
-- [ ] `python tools/validate.py` reports no error and no conditional error.
+- [ ] `python tools/validate.py` reports COMPLIANT, or TO CONFIRM where every conditional finding
+      has been confirmed not to apply to the material.
 - [ ] Every warning has been considered and consciously accepted.
 - [ ] No text field contains a placeholder, `TBD`, `XXX`, `lorem ipsum`, or an empty
-      `dcc:content`. *Nothing checks this.*
+      `dcc:content`. *The rules report an empty required statement, but nothing checks optional
+      fields or placeholder text.*
 - [ ] Where a PDF is embedded, it is the same revision as the XML.
 - [ ] The document is signed **after** it is final, and not edited afterwards.
 
@@ -113,8 +115,9 @@ Everything a published DRMD must satisfy.
 - [ ] XSD validation resolves imports from the local `supporting/` bundle via `catalog.xml`,
       not from the network.
 - [ ] Schematron validation runs after XSD validation, and both must pass.
-- [ ] The pipeline branches on the Schematron `@role`: `error` and `conditional-error` block,
-      `warning` does not.
+- [ ] The pipeline branches on the Schematron `@role`: `error` blocks, `conditional-error` holds
+      the document until a person confirms that the requirement does not apply, and `warning`
+      does not block.
 - [ ] A conditional error is surfaced to a person as a question, *does this apply?*, not as a
       flat rejection.
 - [ ] Rule identifiers are stored with each finding, so a report stays readable later.
@@ -173,11 +176,12 @@ Everything a published DRMD must satisfy.
 
 ### A. Conformance evidence
 
-- [ ] A validation report exists for the document, showing no error and no conditional error.
+- [ ] A validation report exists for the document, showing no error, and no conditional error
+      that has not been confirmed as not applicable.
 - [ ] Every ISO 33401:2024, Table 1 row can be traced to an element, see the
       [ISO 33401:2024 Conformance Map](iso_mapping.md).
-- [ ] Where a conditional requirement was treated as not applicable, the justification is recorded
-     , ideally in the document, and in the producer's quality records either way.
+- [ ] Where a conditional requirement was treated as not applicable, the justification is recorded,
+      in the document where the element allows it, and in the producer's quality records either way.
 
 ### B. Governance
 

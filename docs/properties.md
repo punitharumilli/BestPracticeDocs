@@ -61,7 +61,7 @@ graph TD
 ```
 
 !!! warning "Dual Validation Required"
-    The DRMD schema relies on a dual-profile architecture. The XSD defines the structure, but profile-specific mandatory requirements (e.g., the presence of `@isCertified="true"`, or mandatory uncertainties for certified values) are enforced by the companion **Schematron business rules** (`drmd-business-rules.sch`).
+    DRMD documents are validated in two steps. The XSD defines the structure, but the requirements that depend on the document type (e.g., the presence of `@isCertified="true"`, or mandatory uncertainties for certified values) are enforced by the companion **Schematron business rules** (`drmd-business-rules.sch`).
 
 ---
 
@@ -136,8 +136,9 @@ The `properties` block acts as a "chapter subsection" that groups results into a
 | **`@isCertified`**| `xs:boolean` | **Critical flag governing metrological automated ingestion policies.** |
 
 !!! danger "Certification Rules (Schematron)"
-    - **CRM Profile (`RMC-002`)**: At least one `properties` block **MUST** have `@isCertified="true"`.
-    - **PIS Profile (`PIS-001`)**: No `properties` block may have `@isCertified="true"`.
+    - **Reference material certificate (`RMC-002`)**: At least one `properties` block **MUST** have `@isCertified="true"`.
+    - **Product information sheet (`PIS-001`, `PIS-003`)**: No `properties` block may have `@isCertified="true"`.
+    - `"1"` is equivalent to `"true"`: XML Schema accepts both for a boolean, and the rules treat them alike.
     - Omitting the attribute entirely evaluates to `false` (informative).
 
 ```xml
@@ -269,9 +270,10 @@ This is the core measurement container. It inherits all properties of a DCC `pri
     - State `si:quantityTypeQUDT` on every certified value. A unit gives the dimension; the
       quantity kind says what the number is *about*. `\percent` alone could be a mass fraction, a
       volume fraction, a recovery or a relative uncertainty, see
-      [Units, Quantities & Uncertainty](units_quantities.md#114-quantity-kinds-saying-what-was-measured).
-    - Report a unit D-SI cannot express with `si:hybrid`, never by writing the unusual unit
-      straight into `si:unit`.
+      [Units, Quantities & Uncertainty](units_quantities.md#114-quantity-kinds-saying-what-kind-of-quantity-a-value-is).
+    - Report a unit D-SI cannot express with `si:hybrid` where the value can be converted to an
+      SI unit, and as text where it cannot ([section 11.5](units_quantities.md#115-reporting-a-unit-d-si-cannot-express)),
+      never by writing the unusual unit straight into `si:unit`.
 
 ### 5.8.2 Example: Quantity with SI and Identifier
 
@@ -341,7 +343,7 @@ A list of identifiers that identify what property this quantity represents (e.g.
 Provides traceability and reproducibility of property assignment. 
 
 !!! danger "Schematron Rule: DRMD-014"
-    Procedures are **mandatory whenever applicable**. Rule `RMC-005` additionally provides a warning if procedures are omitted for certified property blocks.
+    Procedures are **mandatory whenever applicable**. In a certificate, rule `RMC-005` additionally gives a warning when no certified properties block documents its procedures.
 
 ```xml
 <drmd:procedures>
@@ -374,19 +376,30 @@ Attach structured declarations: traceability, conventions, validity. This allows
 The most common value type. Requires `value` (double) and `unit` (string). Can optionally include a `measurementUncertaintyUnivariate` block.
 
 !!! danger "Uncertainty Rules (Schematron)"
-    In a `referenceMaterialCertificate`, every quantity inside a `properties` block with
-    `@isCertified="true"` **MUST** carry an uncertainty: one of
-    `si:measurementUncertaintyUnivariate` (current), `si:expandedUnc` or `si:coverageInterval`
-    (both deprecated in D-SI, accepted for backward compatibility).
+    In a `referenceMaterialCertificate`, every numeric value inside a `properties` block with
+    `@isCertified` `"true"` (or `"1"`) **MUST** carry an uncertainty, in one of the forms that
+    D-SI provides for it:
 
-    Four rules cover the four encodings, all hard errors:
+    | Form | Accepted uncertainty |
+    |---|---|
+    | `si:real` | `si:measurementUncertaintyUnivariate` (current), `si:expandedUnc` or `si:coverageInterval` (both deprecated in D-SI, accepted for backward compatibility) |
+    | `si:complex` | `si:ellipsoidalRegion` or `si:rectangularRegion` |
+    | `si:constant` | `si:valueStandardMU` or `si:uncertainty` |
+    | `si:realListXMLList` | `si:measurementUncertaintyUnivariateXMLList`, `si:measurementUncertaintyMultivariateXMLList`, `si:ellipsoidalRegionXMLList`, `si:rectangularRegionXMLList`, or the older `si:expandedUncXMLList` or `si:coverageIntervalXMLList` |
+    | `si:complexListXMLList` | a non-empty `si:measurementUncertaintyBivariateXMLList` or `si:measurementUncertaintyMultivariateXMLList` |
+
+    Four rules cover where the value sits, all hard errors:
 
     | Rule | Applies to |
     |---|---|
-    | **RMC-006** | `si:real` directly under `data/quantity` |
-    | **RMC-007** | `si:real` inside `data/list/quantity` |
-    | **RMC-008** | `si:realListXMLList` under `data/quantity` |
-    | **RMC-009** | every `si:real` nested inside an `si:hybrid` |
+    | **RMC-006** | `si:real`, `si:complex` or `si:constant` directly under `data/quantity` |
+    | **RMC-007** | `si:real`, `si:complex` or `si:constant` inside `data/list/quantity` |
+    | **RMC-008** | `si:realListXMLList` or `si:complexListXMLList`, under `data/quantity` or inside `data/list/quantity` |
+    | **RMC-009** | every number nested inside an `si:hybrid`, in any of the forms above or in the lists `si:realList`, `si:complexList` and `si:list` (with an uncertainty for the list or for each of its values), under `data/quantity` or inside `data/list/quantity` |
+
+    A value given as text (`dcc:noQuantity`) or as a list of codes (`dcc:charsXMLList`) is not
+    checked: it can be a qualitative or nominal value, which has no measurement uncertainty. Give
+    every numeric certified value as a D-SI quantity.
 
     Inside `si:expandedMU`, D-SI requires **both** `si:coverageFactor` and
     `si:coverageProbability`. Omitting either makes the document XSD-invalid, not merely
@@ -430,13 +443,13 @@ The following Schematron rules govern the Properties section to ensure document 
 | Rule ID | Scope | Severity | Description |
 |---------|-------|----------|-------------|
 | **DRMD-003** | All documents | Error | Every DRMD MUST contain at least one `properties` block. |
-| **DRMD-009** | All documents | Error | Each `properties` block MUST contain `results`. |
+| **DRMD-009** | All documents | Error | Each `properties` block MUST contain at least one `result`. |
 | **DRMD-014** | All documents | Conditional Error | Each `properties` block MUST include `procedures` whenever applicable. |
-| **RMC-002** | CRM only | Error | At least one `properties` block MUST have `@isCertified="true"`. |
-| **RMC-005** | CRM only | Warning | Certified `properties` SHOULD document measurement procedures. |
-| **RMC-006 to 009** | CRM only | Error | All certified quantity payloads (`si:real`, `si:realListXMLList`, `si:hybrid`) MUST include uncertainty. |
+| **RMC-002** | RMC only | Error | At least one `properties` block MUST have `@isCertified="true"`. |
+| **RMC-005** | RMC only | Warning | At least one certified `properties` block SHOULD document its measurement procedures. |
+| **RMC-006 to 009** | RMC only | Error | Every numeric value in a certified block (`si:real`, `si:complex`, `si:constant`, `si:realListXMLList`, `si:complexListXMLList`, and each of these inside `si:hybrid`), single or inside a list, MUST carry an uncertainty. |
 | **PIS-001** | PIS only | Error | Product Information Sheets MUST NOT have `@isCertified="true"` on any `properties` block. |
-| **PIS-002** | PIS only | Error | Results must exist where property values are assigned. |
+| **PIS-002** | PIS only | Error | At least one `properties` block MUST contain a `result`. |
 | **PIS-003** | PIS only | Error | No individual `properties` block may claim certification. |
 
 ```mermaid
@@ -446,9 +459,9 @@ graph LR
     PROPS -->|"DRMD-009"| RESULTS["results/result"]
     PROPS -->|"DRMD-014"| PROC["procedures<br/><i>when applicable</i>"]
     
-    PROPS -.->|"RMC-002<br/><i>CRM only</i>"| CERT["@isCertified='true'"]
-    CERT -->|"RMC-006..009<br/><i>CRM only</i>"| UNCERT["Uncertainty Required"]
-    CERT -.->|"RMC-005<br/><i>CRM only</i>"| PROC2["procedures Warning"]
+    PROPS -.->|"RMC-002<br/><i>RMC only</i>"| CERT["@isCertified='true'"]
+    CERT -->|"RMC-006..009<br/><i>RMC only</i>"| UNCERT["Uncertainty Required"]
+    CERT -.->|"RMC-005<br/><i>RMC only</i>"| PROC2["procedures Warning"]
 
     PROPS -.->|"PIS-001<br/><i>PIS only</i>"| NOCERT["@isCertified='true' FORBIDDEN"]
 

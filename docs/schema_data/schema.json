@@ -29,67 +29,67 @@
       "id": "DRMD-002",
       "role": "error",
       "test": "drmd:materials/drmd:material",
-      "description": "[DRMD-002] Every DRMD document MUST contain at least one material entry in the materials catalogue (ISO 33401:2024, \u00a75.2.4, Name of the RM)."
+      "description": "[DRMD-002] Every DRMD document MUST contain at least one material entry in the materials catalogue (ISO 33401:2024, 5.2.4, Name of the RM)."
     },
     {
       "id": "DRMD-003",
       "role": "error",
       "test": "drmd:propertiesList/drmd:properties",
-      "description": "[DRMD-003] Every DRMD document MUST contain at least one properties block with measurement data (ISO 33401:2024, \u00a75.2.15, Property of interest)."
+      "description": "[DRMD-003] Every DRMD document MUST contain at least one properties block with measurement data (ISO 33401:2024, 5.2.15, Property of interest)."
     },
     {
       "id": "RMC-001",
       "role": "error",
-      "test": "drmd:statements/drmd:metrologicalTraceability",
-      "description": "[RMC-001] Reference Material Certificates MUST include a metrologicalTraceability statement formalizing the chain of comparisons linking certified results to SI base units or international calibration benchmarks (ISO 33401:2024, \u00a75.3.4, Metrological traceability: 'Mandatory' for RM certificate). This is not required for productInformationSheet documents."
+      "test": "drmd:statements/drmd:metrologicalTraceability[dcc:content[normalize-space(.) != ''] or dcc:file or dcc:formula]",
+      "description": "[RMC-001] Reference Material Certificates MUST include a metrologicalTraceability statement that gives, for the certified values, the reference to which they are metrologically traceable (ISO 33401:2024, 5.3.4, Metrological traceability: 'Mandatory' for RM certificate). This is not required for productInformationSheet documents."
     },
     {
       "id": "RMC-002",
       "role": "error",
-      "test": "drmd:propertiesList/drmd:properties[@isCertified = 'true']",
-      "description": "[RMC-002] Reference Material Certificates MUST have at least one properties block with the attribute isCertified=\"true\" containing certified property values (ISO 33401:2024, \u00a75.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate). A certificate without certified values is structurally invalid."
+      "test": "drmd:propertiesList/drmd:properties[(normalize-space(@isCertified) = 'true' or normalize-space(@isCertified) = '1')]",
+      "description": "[RMC-002] Reference Material Certificates MUST have at least one properties block with the attribute isCertified=\"true\" (or its equivalent \"1\") containing certified property values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate). A certificate without certified values does not meet ISO 33401:2024."
     },
     {
       "id": "RMC-003",
       "role": "error",
       "test": "drmd:propertiesList/drmd:properties/drmd:results/drmd:result",
-      "description": "[RMC-003] Reference Material Certificates MUST include property values (ISO 33401:2024, \u00a75.3.3, Property value and associated uncertainty)."
+      "description": "[RMC-003] Reference Material Certificates MUST include property values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty)."
     },
     {
       "id": "RMC-005",
       "role": "warning",
-      "test": "drmd:propertiesList/drmd:properties[@isCertified = 'true']/drmd:procedures",
-      "description": "[RMC-005] Reference Material Certificates SHOULD document the measurement procedures used for certified properties (ISO 33401:2024, \u00a75.4.2, Measurement procedures for non-operationally defined measurands: 'Recommended' for both document profiles)."
+      "test": "drmd:propertiesList/drmd:properties[(normalize-space(@isCertified) = 'true' or normalize-space(@isCertified) = '1')]/drmd:procedures[dcc:usedMethod/dcc:name/dcc:content[normalize-space(.) != '']]",
+      "description": "[RMC-005] Reference Material Certificates SHOULD document the measurement procedures used for certified properties (ISO 33401:2024, 5.4.2, Measurement procedures for non-operationally defined measurands: 'Recommended' for both document types)."
     },
     {
       "id": "RMC-010",
       "role": "error",
       "test": "drmd:administrativeData/drmd:respPersons",
-      "description": "[RMC-010] Reference Material Certificates MUST list responsible persons including the name and function of the RM producer's approving officer (ISO 33401:2024, \u00a75.3.5, Name and function of the RM producer's approving officer: 'Mandatory' for RM certificate, 'Optional' for product information sheet)."
+      "description": "[RMC-010] Reference Material Certificates MUST list responsible persons including the name and function of the RM producer's approving officer (ISO 33401:2024, 5.3.5, Name and function of the RM producer's approving officer: 'Mandatory' for RM certificate, 'Optional' for product information sheet)."
     },
     {
       "id": "RMC-012",
       "role": "error",
       "test": "drmd:administrativeData/drmd:respPersons/dcc:respPerson[normalize-space(dcc:role) != '']",
-      "description": "[RMC-012] In a Reference Material Certificate, at least one dcc:respPerson MUST state a dcc:role. ISO 33401:2024, \u00a75.3.5 requires the name AND the function of the officer representing the RM producer who accepts responsibility for the contents of the certificate; RMC-010 checks that the respPersons list exists, and this rule checks that the function is actually recorded. The role may name the responsible organisational unit rather than a personal job title (\u00a75.3.5, NOTE). The officer's name is required by dcc:respPerson itself and needs no separate rule."
+      "description": "[RMC-012] In a Reference Material Certificate, at least one dcc:respPerson MUST state a dcc:role. ISO 33401:2024, 5.3.5 requires both the name and the function of the RM producer's approving officer; RMC-010 checks that the respPersons list exists, and this rule checks that the function is recorded. The name is required by dcc:respPerson itself and needs no separate rule; by the note to 5.3.5 it may be the name of the responsible organisation."
     },
     {
       "id": "RMC-011",
       "role": "error",
-      "test": "drmd:materials/drmd:material/drmd:description",
-      "description": "[RMC-011] Reference Material Certificates MUST include a description for each material (ISO 33401:2024, \u00a75.3.2, Description of the material: 'Mandatory' for RM certificate, 'Recommended' for product information sheet)."
+      "test": "not(drmd:materials/drmd:material[not(drmd:description[dcc:content[normalize-space(.) != ''] or dcc:file or dcc:formula])])",
+      "description": "[RMC-011] Reference Material Certificates MUST include a description for each material (ISO 33401:2024, 5.3.2, Description of the material: 'Mandatory' for RM certificate, 'Recommended' for product information sheet)."
     },
     {
       "id": "PIS-001",
       "role": "error",
-      "test": "not(drmd:propertiesList/drmd:properties[@isCertified = 'true'])",
-      "description": "[PIS-001] Product Information Sheets MUST NOT mark any properties block as isCertified=\"true\". Only Reference Material Certificate documents (CRM) may contain certified property values. Setting isCertified=\"true\" on a productInformationSheet document constitutes a misrepresentation of the material's metrological status and violates the ISO 33401:2024 distinction between RMs and CRMs."
+      "test": "not(drmd:propertiesList/drmd:properties[(normalize-space(@isCertified) = 'true' or normalize-space(@isCertified) = '1')])",
+      "description": "[PIS-001] Product Information Sheets MUST NOT mark any properties block as isCertified=\"true\" (or its equivalent \"1\"). Only reference material certificates, which accompany certified reference materials, may contain certified property values. Setting isCertified=\"true\" on a productInformationSheet document constitutes a misrepresentation of the material's metrological status and violates the ISO 33401:2024 distinction between RMs and CRMs."
     },
     {
       "id": "PIS-002",
       "role": "error",
       "test": "drmd:propertiesList/drmd:properties/drmd:results/drmd:result",
-      "description": "[PIS-002] Product Information Sheets MUST include results where property values are assigned (ISO 33401:2024, \u00a75.2.15, Property of interest)."
+      "description": "[PIS-002] Product Information Sheets MUST include results where property values are assigned (ISO 33401:2024, 5.2.15, Property of interest)."
     }
   ],
   "children": [
@@ -110,7 +110,7 @@
           "id": "DRMD-010",
           "role": "error",
           "test": "drmd:referenceMaterialProducer",
-          "description": "[DRMD-010] Every DRMD document MUST identify the referenceMaterialProducer (ISO 33401:2024, \u00a75.2.5, Name and contact details of the RM producer)."
+          "description": "[DRMD-010] Every DRMD document MUST identify the referenceMaterialProducer (ISO 33401:2024, 5.2.5, Name and contact details of the RM producer)."
         }
       ],
       "children": [
@@ -123,7 +123,7 @@
           "compositor": "sequence",
           "abstract": false,
           "substitutions": [],
-          "description": "Core data about the document: its type (RM certificate or product information sheet), its unique identifier, its version, optional further identifiers, and its period of validity.",
+          "description": "Core data about the document: its type (RM certificate or product information sheet), its unique identifier, its version, optional further identifiers, and the period of validity of the material.",
           "path": "digitalReferenceMaterialDocument/administrativeData/coreData",
           "attributes": [],
           "rules": [
@@ -131,13 +131,13 @@
               "id": "DRMD-012",
               "role": "error",
               "test": "drmd:validity",
-              "description": "[DRMD-012] Every DRMD document MUST specify a validity period or condition (ISO 33401:2024, \u00a75.2.8, Period of validity)."
+              "description": "[DRMD-012] Every DRMD document MUST specify a validity period or condition (ISO 33401:2024, 5.2.8, Period of validity)."
             },
             {
               "id": "DRMD-011",
               "role": "error",
               "test": "drmd:documentVersion",
-              "description": "[DRMD-011] Every DRMD document MUST state its documentVersion in coreData (ISO 33401:2024, \u00a75.2.13, Document version: 'Mandatory' for both document profiles). A version number, an approval date, or both are acceptable, provided the value changes whenever the document content changes. This requirement is also enforced structurally by drmd.xsd; the rule is stated here so that a Schematron report covers ISO 33401:2024, Table 1 in full on its own."
+              "description": "[DRMD-011] Every DRMD document MUST state its documentVersion in coreData (ISO 33401:2024, 5.2.13, Document version: 'Mandatory' for both document types). A version number, an approval date, or both are acceptable, provided the value changes whenever the document content changes. This requirement is also enforced structurally by drmd.xsd; the rule is stated here so that a Schematron report covers ISO 33401:2024, Table 1 in full on its own."
             }
           ],
           "children": [
@@ -175,7 +175,7 @@
               "compositor": "sequence",
               "abstract": false,
               "substitutions": [],
-              "description": "A mandatory identifier of this DOCUMENT that is unique worldwide (a UUID is recommended). If the content is changed after issue, a new document with a new unique identifier is issued; the existing document is not edited. SCOPE NOTE (ISO 33401:2024, Section 5.2.3): this element identifies the document, not the reference material. The unique identifier OF THE RM required by Section 5.2.3, typically a product code combined with a batch or lot number such as \"NMIJ CRM 7305-a\" or \"ERM-AC110\", is carried by materials/material/materialIdentifiers and is enforced by Schematron rule DRMD-016. Do not use this element for the RM identifier: one document may cover several materials, and the same material is described by successive document revisions.",
+              "description": "A mandatory identifier of this DOCUMENT that is unique worldwide (a UUID is recommended). If the content is changed after issue, a new document with a new unique identifier is issued; the existing document is not edited. SCOPE NOTE (ISO 33401:2024, 5.2.3): this element identifies the document, not the reference material. The unique identifier OF THE RM required by 5.2.3, typically a product code, combined where needed with a batch or lot number, such as \"BAM-M386a\", is carried by materials/material/materialIdentifiers and is enforced by Schematron rule DRMD-016. Do not use this element for the RM identifier: one document may cover several materials, and the same material is described by successive document revisions.",
               "path": "digitalReferenceMaterialDocument/administrativeData/coreData/uniqueIdentifier",
               "attributes": [],
               "rules": [],
@@ -190,7 +190,7 @@
               "compositor": "sequence",
               "abstract": false,
               "substitutions": [],
-              "description": "A mandatory version string identifying the revision of this document. Enables tracking of document updates and ensures recipients can verify they hold the current version (ISO 33401:2024, Section 5.2.13, Mandatory for both document profiles). Its presence is required by this XSD and is additionally asserted by the companion Schematron rule DRMD-011, so that a Schematron-only validation report also covers the requirement. A version number, an approval date, or both are acceptable; whichever form is chosen must change whenever the document content changes.",
+              "description": "A mandatory version string identifying the revision of this document. Enables tracking of document updates and ensures recipients can verify they hold the current version (ISO 33401:2024, 5.2.13, Mandatory for both document types). Its presence is required by this XSD and is additionally asserted by the companion Schematron rule DRMD-011, so that a Schematron-only validation report also covers the requirement. A version number, an approval date, or both are acceptable; whichever form is chosen must change whenever the document content changes.",
               "path": "digitalReferenceMaterialDocument/administrativeData/coreData/documentVersion",
               "attributes": [],
               "rules": [
@@ -198,7 +198,7 @@
                   "id": "DRMD-011",
                   "role": "error",
                   "test": "drmd:documentVersion",
-                  "description": "[DRMD-011] Every DRMD document MUST state its documentVersion in coreData (ISO 33401:2024, \u00a75.2.13, Document version: 'Mandatory' for both document profiles). A version number, an approval date, or both are acceptable, provided the value changes whenever the document content changes. This requirement is also enforced structurally by drmd.xsd; the rule is stated here so that a Schematron report covers ISO 33401:2024, Table 1 in full on its own."
+                  "description": "[DRMD-011] Every DRMD document MUST state its documentVersion in coreData (ISO 33401:2024, 5.2.13, Document version: 'Mandatory' for both document types). A version number, an approval date, or both are acceptable, provided the value changes whenever the document content changes. This requirement is also enforced structurally by drmd.xsd; the rule is stated here so that a Schematron report covers ISO 33401:2024, Table 1 in full on its own."
                 }
               ],
               "children": []
@@ -311,7 +311,7 @@
               "compositor": "sequence",
               "abstract": false,
               "substitutions": [],
-              "description": "The period of validity of the document (ISO 33401:2024, Section 5.2.8), given in one of three ways: valid until revoked, valid for a period after dispatch, or valid until a fixed date. Software can compare it with the current date, for example to warn before an expired material is used.",
+              "description": "The period of validity of the reference material (ISO 33401:2024, 5.2.8): the time during which the producer states that the material is fit for its intended use. It is given in one of three ways: valid until revoked, valid for a period after dispatch, or valid until a fixed date. Software can compare it with the current date, for example to warn before an expired material is used.",
               "path": "digitalReferenceMaterialDocument/administrativeData/coreData/validity",
               "attributes": [],
               "rules": [
@@ -319,7 +319,7 @@
                   "id": "DRMD-012",
                   "role": "error",
                   "test": "drmd:validity",
-                  "description": "[DRMD-012] Every DRMD document MUST specify a validity period or condition (ISO 33401:2024, \u00a75.2.8, Period of validity)."
+                  "description": "[DRMD-012] Every DRMD document MUST specify a validity period or condition (ISO 33401:2024, 5.2.8, Period of validity)."
                 }
               ],
               "children": [
@@ -332,7 +332,7 @@
                   "compositor": "choice",
                   "abstract": false,
                   "substitutions": [],
-                  "description": "The document stays valid until the producer withdraws or replaces it. Suitable for materials whose property values are not expected to change over time.",
+                  "description": "The stated property values stay valid until the producer revokes them, without a fixed end. Suitable for inherently stable materials, whose property values are not expected to change.",
                   "path": "digitalReferenceMaterialDocument/administrativeData/coreData/validity/untilRevoked",
                   "attributes": [],
                   "rules": [],
@@ -371,14 +371,14 @@
                     },
                     {
                       "name": "period",
-                      "type": "xs:duration",
-                      "base": "",
+                      "type": "complexType",
+                      "base": "xs:duration",
                       "enumerations": null,
                       "cardinality": "[1..1]",
                       "compositor": "sequence",
                       "abstract": false,
                       "substitutions": [],
-                      "description": "A mandatory ISO 8601 duration format string (e.g., 'P3Y2M') stating the exact lifespan allotted for material use once dispatched.",
+                      "description": "The period of validity after dispatch (mandatory), as an XML Schema duration, the subset of ISO 8601 durations defined by xs:duration (e.g., 'P3Y2M'). Negative durations are not permitted.",
                       "path": "digitalReferenceMaterialDocument/administrativeData/coreData/validity/timeAfterDispatch/period",
                       "attributes": [],
                       "rules": [],
@@ -418,7 +418,7 @@
           "compositor": "sequence",
           "abstract": false,
           "substitutions": [],
-          "description": "The reference material producer: the organisation responsible for the reference material and for this document (ISO 33401:2024, Section 5.2.5). Holds its name, contact details, optional statements on electronic seals, signatures and time stamps, and optional organisation identifiers such as ROR.",
+          "description": "The reference material producer: the organisation responsible for the reference material and for this document (ISO 33401:2024, 5.2.5). Holds its name, contact details, optional statements on electronic seals, signatures and time stamps, and optional organisation identifiers such as ROR.",
           "path": "digitalReferenceMaterialDocument/administrativeData/referenceMaterialProducer",
           "attributes": [],
           "rules": [
@@ -426,7 +426,7 @@
               "id": "DRMD-010",
               "role": "error",
               "test": "drmd:referenceMaterialProducer",
-              "description": "[DRMD-010] Every DRMD document MUST identify the referenceMaterialProducer (ISO 33401:2024, \u00a75.2.5, Name and contact details of the RM producer)."
+              "description": "[DRMD-010] Every DRMD document MUST identify the referenceMaterialProducer (ISO 33401:2024, 5.2.5, Name and contact details of the RM producer)."
             }
           ],
           "children": [
@@ -3643,7 +3643,7 @@
           "compositor": "sequence",
           "abstract": false,
           "substitutions": [],
-          "description": "The persons responsible for the document, including the approving officer, each with their role or function (e.g., 'Head of Department', 'Quality Manager') and contact details. dcc:mainSigner can mark the person who signs the document. PROFILE NOTE (ISO 33401:2024, Section 5.3.5): This element is structurally optional in the XSD. For referenceMaterialCertificate documents, the name AND FUNCTION of the RM producer's approving officer is MANDATORY. Two Schematron rules enforce this together: RMC-010 requires the respPersons list to be present, and RMC-012 requires at least one dcc:respPerson in it to state a dcc:role, because ISO 33401:2024 asks for the officer's function and not only their name. The function may be the name of the responsible organisational unit rather than a personal job title. For productInformationSheet documents, this element is optional.",
+          "description": "The persons responsible for the document, including the approving officer, each with their role or function (e.g., 'Head of Department', 'Quality Manager') and contact details. dcc:mainSigner can mark the person who signs the document. DOCUMENT TYPES (ISO 33401:2024, 5.3.5): This element is structurally optional in the XSD. For referenceMaterialCertificate documents, the name AND FUNCTION of the RM producer's approving officer is MANDATORY. Two Schematron rules enforce this together: RMC-010 requires the respPersons list to be present, and RMC-012 requires at least one dcc:respPerson in it to state a dcc:role, because ISO 33401:2024 asks for the officer's function and not only their name. By the note to ISO 33401:2024, 5.3.5, the name may be that of the responsible organisation. For productInformationSheet documents, this element is optional.",
           "path": "digitalReferenceMaterialDocument/administrativeData/respPersons",
           "attributes": [],
           "rules": [
@@ -3651,7 +3651,7 @@
               "id": "RMC-010",
               "role": "error",
               "test": "drmd:administrativeData/drmd:respPersons",
-              "description": "[RMC-010] Reference Material Certificates MUST list responsible persons including the name and function of the RM producer's approving officer (ISO 33401:2024, \u00a75.3.5, Name and function of the RM producer's approving officer: 'Mandatory' for RM certificate, 'Optional' for product information sheet)."
+              "description": "[RMC-010] Reference Material Certificates MUST list responsible persons including the name and function of the RM producer's approving officer (ISO 33401:2024, 5.3.5, Name and function of the RM producer's approving officer: 'Mandatory' for RM certificate, 'Optional' for product information sheet)."
             }
           ],
           "children": [
@@ -3694,7 +3694,7 @@
                   "id": "RMC-012",
                   "role": "error",
                   "test": "drmd:administrativeData/drmd:respPersons/dcc:respPerson[normalize-space(dcc:role) != '']",
-                  "description": "[RMC-012] In a Reference Material Certificate, at least one dcc:respPerson MUST state a dcc:role. ISO 33401:2024, \u00a75.3.5 requires the name AND the function of the officer representing the RM producer who accepts responsibility for the contents of the certificate; RMC-010 checks that the respPersons list exists, and this rule checks that the function is actually recorded. The role may name the responsible organisational unit rather than a personal job title (\u00a75.3.5, NOTE). The officer's name is required by dcc:respPerson itself and needs no separate rule."
+                  "description": "[RMC-012] In a Reference Material Certificate, at least one dcc:respPerson MUST state a dcc:role. ISO 33401:2024, 5.3.5 requires both the name and the function of the RM producer's approving officer; RMC-010 checks that the respPersons list exists, and this rule checks that the function is recorded. The name is required by dcc:respPerson itself and needs no separate rule; by the note to 5.3.5 it may be the name of the responsible organisation."
                 }
               ],
               "children": [
@@ -6661,31 +6661,31 @@
               "id": "DRMD-002",
               "role": "error",
               "test": "drmd:materials/drmd:material",
-              "description": "[DRMD-002] Every DRMD document MUST contain at least one material entry in the materials catalogue (ISO 33401:2024, \u00a75.2.4, Name of the RM)."
+              "description": "[DRMD-002] Every DRMD document MUST contain at least one material entry in the materials catalogue (ISO 33401:2024, 5.2.4, Name of the RM)."
             },
             {
               "id": "DRMD-007",
               "role": "error",
-              "test": "drmd:name",
-              "description": "[DRMD-007] Every material entry MUST include a name element (ISO 33401:2024, \u00a75.2.4, Name of the RM)."
+              "test": "drmd:name[dcc:content[normalize-space(.) != '']]",
+              "description": "[DRMD-007] Every material entry MUST include a name element (ISO 33401:2024, 5.2.4, Name of the RM)."
             },
             {
               "id": "DRMD-008",
               "role": "conditional-error",
               "test": "drmd:minimumSampleSize",
-              "description": "[DRMD-008] Each material entry MUST specify a minimumSampleSize whenever applicable to ensure representative sampling for homogeneity (ISO 33401:2024, \u00a75.2.7, Minimum sample size: 'Mandatory whenever applicable' for both document profiles)."
+              "description": "[DRMD-008] Each material entry MUST specify a minimumSampleSize whenever applicable: the smallest amount of material for which the stated property values and uncertainties apply (ISO 33401:2024, 5.2.7, Minimum sample size: 'Mandatory whenever applicable' for both document types)."
             },
             {
               "id": "DRMD-016",
               "role": "error",
               "test": "drmd:materialIdentifiers/drmd:materialIdentifier",
-              "description": "[DRMD-016] Each material entry MUST carry at least one materialIdentifier giving the unique identifier of the reference material (ISO 33401:2024, \u00a75.2.3, Unique identifier of the RM: 'Mandatory' for both document profiles). The identifier must distinguish this RM from any other RM issued by the same producer; a product code, normally combined with a batch or lot number, satisfies this. Note that coreData/uniqueIdentifier identifies the DOCUMENT and does not satisfy \u00a75.2.3, because one document may cover several materials and one material may be described by successive document revisions."
+              "description": "[DRMD-016] Each material entry MUST carry at least one materialIdentifier giving the unique identifier of the reference material (ISO 33401:2024, 5.2.3, Unique identifier of the RM: 'Mandatory' for both document types). The identifier must distinguish this RM from any other RM issued by the same producer; a product code, normally combined with a batch or lot number, satisfies this. Note that coreData/uniqueIdentifier identifies the DOCUMENT and does not satisfy 5.2.3, because one document may cover several materials and one material may be described by successive document revisions."
             },
             {
               "id": "PIS-005",
               "role": "warning",
-              "test": "drmd:description",
-              "description": "[PIS-005] Product Information Sheets SHOULD include a description for each material. While not mandatory for Product Information Sheets, material descriptions improve usability (ISO 33401:2024, \u00a75.3.2, Description of the material: 'Recommended' for product information sheet, 'Mandatory' for RM certificate)."
+              "test": "drmd:description[dcc:content[normalize-space(.) != ''] or dcc:file or dcc:formula]",
+              "description": "[PIS-005] Product Information Sheets SHOULD include a description for each material. While not mandatory for Product Information Sheets, material descriptions improve usability (ISO 33401:2024, 5.3.2, Description of the material: 'Recommended' for product information sheet, 'Mandatory' for RM certificate)."
             }
           ],
           "children": [
@@ -6698,7 +6698,7 @@
               "compositor": "sequence",
               "abstract": false,
               "substitutions": [],
-              "description": "The name of the reference material (ISO 33401:2024, Section 5.2.4), as it appears on the label. It may be given in several languages.",
+              "description": "The name of the reference material (ISO 33401:2024, 5.2.4), as it appears on the label. It may be given in several languages.",
               "path": "digitalReferenceMaterialDocument/materials/material/name",
               "attributes": [
                 {
@@ -6720,8 +6720,8 @@
                 {
                   "id": "DRMD-007",
                   "role": "error",
-                  "test": "drmd:name",
-                  "description": "[DRMD-007] Every material entry MUST include a name element (ISO 33401:2024, \u00a75.2.4, Name of the RM)."
+                  "test": "drmd:name[dcc:content[normalize-space(.) != '']]",
+                  "description": "[DRMD-007] Every material entry MUST include a name element (ISO 33401:2024, 5.2.4, Name of the RM)."
                 }
               ],
               "children": [
@@ -6751,7 +6751,7 @@
               "compositor": "sequence",
               "abstract": false,
               "substitutions": [],
-              "description": "A description of the material, for example its matrix, form, appearance, dimensions and packaging. Text can be accompanied by files such as drawings or photographs. PROFILE NOTE (ISO 33401:2024, \u00a75.3.2): This element is structurally optional in the XSD. For referenceMaterialCertificate documents, the description of the material is MANDATORY and its presence is enforced by the companion Schematron rules. For productInformationSheet documents, this element is recommended but not required.",
+              "description": "A description of the material, for example its matrix, form, appearance, dimensions and packaging. Text can be accompanied by files such as drawings or photographs. DOCUMENT TYPES (ISO 33401:2024, 5.3.2): This element is structurally optional in the XSD. For referenceMaterialCertificate documents, the description of the material is MANDATORY and its presence is enforced by the companion Schematron rules. For productInformationSheet documents, this element is recommended but not required.",
               "path": "digitalReferenceMaterialDocument/materials/material/description",
               "attributes": [
                 {
@@ -6778,16 +6778,10 @@
               ],
               "rules": [
                 {
-                  "id": "RMC-011",
-                  "role": "error",
-                  "test": "drmd:materials/drmd:material/drmd:description",
-                  "description": "[RMC-011] Reference Material Certificates MUST include a description for each material (ISO 33401:2024, \u00a75.3.2, Description of the material: 'Mandatory' for RM certificate, 'Recommended' for product information sheet)."
-                },
-                {
                   "id": "PIS-005",
                   "role": "warning",
-                  "test": "drmd:description",
-                  "description": "[PIS-005] Product Information Sheets SHOULD include a description for each material. While not mandatory for Product Information Sheets, material descriptions improve usability (ISO 33401:2024, \u00a75.3.2, Description of the material: 'Recommended' for product information sheet, 'Mandatory' for RM certificate)."
+                  "test": "drmd:description[dcc:content[normalize-space(.) != ''] or dcc:file or dcc:formula]",
+                  "description": "[PIS-005] Product Information Sheets SHOULD include a description for each material. While not mandatory for Product Information Sheets, material descriptions improve usability (ISO 33401:2024, 5.3.2, Description of the material: 'Recommended' for product information sheet, 'Mandatory' for RM certificate)."
                 }
               ],
               "children": [
@@ -7206,7 +7200,7 @@
               "compositor": "sequence",
               "abstract": false,
               "substitutions": [],
-              "description": "The smallest amount of material (mass, volume, area, ...) for which the stated property values and uncertainties apply, usually derived from the homogeneity study. Software can use it to warn when a smaller test portion is used. PROFILE NOTE (ISO 33401:2024, \u00a75.2.7): This element is 'mandatory whenever applicable' for both document profiles. It is structurally optional in the XSD to accommodate materials where a minimum sample size is not applicable. Its presence is enforced by the companion Schematron rule DRMD-008 (conditional-error).",
+              "description": "The smallest amount of material (mass, volume, area, ...) for which the stated property values and uncertainties apply, usually derived from the homogeneity study. Software can use it to warn when a smaller test portion is used. DOCUMENT TYPES (ISO 33401:2024, 5.2.7): This element is 'mandatory whenever applicable' for both document types. It is structurally optional in the XSD to accommodate materials where a minimum sample size is not applicable. Its presence is enforced by the companion Schematron rule DRMD-008 (conditional-error).",
               "path": "digitalReferenceMaterialDocument/materials/material/minimumSampleSize",
               "attributes": [],
               "rules": [
@@ -7214,7 +7208,7 @@
                   "id": "DRMD-008",
                   "role": "conditional-error",
                   "test": "drmd:minimumSampleSize",
-                  "description": "[DRMD-008] Each material entry MUST specify a minimumSampleSize whenever applicable to ensure representative sampling for homogeneity (ISO 33401:2024, \u00a75.2.7, Minimum sample size: 'Mandatory whenever applicable' for both document profiles)."
+                  "description": "[DRMD-008] Each material entry MUST specify a minimumSampleSize whenever applicable: the smallest amount of material for which the stated property values and uncertainties apply (ISO 33401:2024, 5.2.7, Minimum sample size: 'Mandatory whenever applicable' for both document types)."
                 }
               ],
               "children": [
@@ -27033,7 +27027,7 @@
               "compositor": "sequence",
               "abstract": false,
               "substitutions": [],
-              "description": "The identifiers of the reference material, for example product code and batch or lot number, used to match the document to the physical unit and to database records. PROFILE NOTE (ISO 33401:2024, Section 5.2.3): this element carries the unique identifier OF THE RM, which is MANDATORY for both document profiles. The element is structurally optional in the XSD only to keep the two profiles on one content model; its presence is enforced by the companion Schematron rule DRMD-016 (error). Provide at least one identifier that distinguishes this RM from any other RM issued by the same producer, normally a product code and, where units are produced in batches, a batch or lot number as a second identifier. Where each unit is individually characterised, add the unit serial number as a further identifier. Keep the values exactly as they are printed on the container label, so that the physical unit and the document can be matched without interpretation.",
+              "description": "The identifiers of the reference material, for example product code and batch or lot number, used to match the document to the physical unit and to database records. DOCUMENT TYPES (ISO 33401:2024, 5.2.3): this element carries the unique identifier OF THE RM, which is MANDATORY for both document types. The element is structurally optional in the XSD only to keep the two document types on one content model; its presence is enforced by the companion Schematron rule DRMD-016 (error). Provide at least one identifier that distinguishes this RM from any other RM issued by the same producer, normally a product code and, where units are produced in batches, a batch or lot number as a second identifier. Where each unit is individually characterised, add the unit serial number as a further identifier. Keep the values exactly as they are printed on the container label, so that the physical unit and the document can be matched without interpretation.",
               "path": "digitalReferenceMaterialDocument/materials/material/materialIdentifiers",
               "attributes": [],
               "rules": [],
@@ -27077,7 +27071,7 @@
                       "id": "DRMD-016",
                       "role": "error",
                       "test": "drmd:materialIdentifiers/drmd:materialIdentifier",
-                      "description": "[DRMD-016] Each material entry MUST carry at least one materialIdentifier giving the unique identifier of the reference material (ISO 33401:2024, \u00a75.2.3, Unique identifier of the RM: 'Mandatory' for both document profiles). The identifier must distinguish this RM from any other RM issued by the same producer; a product code, normally combined with a batch or lot number, satisfies this. Note that coreData/uniqueIdentifier identifies the DOCUMENT and does not satisfy \u00a75.2.3, because one document may cover several materials and one material may be described by successive document revisions."
+                      "description": "[DRMD-016] Each material entry MUST carry at least one materialIdentifier giving the unique identifier of the reference material (ISO 33401:2024, 5.2.3, Unique identifier of the RM: 'Mandatory' for both document types). The identifier must distinguish this RM from any other RM issued by the same producer; a product code, normally combined with a batch or lot number, satisfies this. Note that coreData/uniqueIdentifier identifies the DOCUMENT and does not satisfy 5.2.3, because one document may cover several materials and one material may be described by successive document revisions."
                     }
                   ],
                   "children": [
@@ -27157,7 +27151,7 @@
           "compositor": "sequence",
           "abstract": false,
           "substitutions": [],
-          "description": "A block of property values: its name, an optional description, the measurement procedures, the results and optional metadata. The @isCertified attribute states whether the values in this block are certified (\"true\") or informative (attribute omitted or \"false\"). PROFILE NOTE (ISO 33401:2024, \u00a75.3.3): - referenceMaterialCertificate: MUST contain at least one properties block with @isCertified=\"true\". Certified property values MUST include measurement uncertainty and metrological traceability (Schematron rules RMC-002, RMC-003). - productInformationSheet: MUST NOT set @isCertified=\"true\" on any properties block. Uncertainty values are optional (Schematron rule PIS-001).",
+          "description": "A block of property values: its name, an optional description, the measurement procedures, the results and optional metadata. The @isCertified attribute states whether the values in this block are certified (\"true\") or informative (attribute omitted or \"false\"). DOCUMENT TYPES (ISO 33401:2024, 5.3.3): - referenceMaterialCertificate: at least one properties block MUST have @isCertified=\"true\" (Schematron rule RMC-002), every certified value MUST carry a measurement uncertainty (RMC-006 to RMC-009), and the certificate MUST state the metrological traceability of the certified values (RMC-001). - productInformationSheet: no properties block may have @isCertified=\"true\" (PIS-001, PIS-003). Uncertainties are optional.",
           "path": "digitalReferenceMaterialDocument/propertiesList/properties",
           "attributes": [
             {
@@ -27185,7 +27179,7 @@
               "name": "isCertified",
               "type": "xs:boolean",
               "use": "optional",
-              "description": "States whether the values in this block are certified. \"true\" marks certified values. Omitted or \"false\" means the values are informative (not certified), for example indicative or additional values. INDICATIVE VALUES (ISO 33401:2024, Section 5.4.5, Optional for both document profiles): indicative values are carried in an ordinary properties block with isCertified omitted or set to 'false'. No separate element and no Schematron rule exist for them, because the requirement is optional. Give such a block a name that says what it holds (for example 'Indicative values') so that a reader and a parser reach the same conclusion as the attribute. PROFILE NOTE (ISO 33401:2024, \u00a75.3.3): - referenceMaterialCertificate: At least one properties block MUST have isCertified=\"true\", and all certified property values MUST include expanded measurement uncertainty and metrological traceability. - productInformationSheet: isCertified MUST NOT be set to \"true\" on any properties block. This prevents informational RM documents from being misrepresented as certified data.",
+              "description": "States whether the values in this block are certified. \"true\" (or its equivalent \"1\") marks certified values. Omitted or \"false\" means the values are informative (not certified), for example indicative or additional values. INDICATIVE VALUES (ISO 33401:2024, 5.4.5, Optional for both document types): indicative values are carried in an ordinary properties block with isCertified omitted or set to 'false'. No separate element and no Schematron rule exist for them, because the requirement is optional. Give such a block a name that says what it holds (for example 'Indicative values') so that a reader and a parser reach the same conclusion as the attribute. DOCUMENT TYPES (ISO 33401:2024, 5.3.3): - referenceMaterialCertificate: at least one properties block MUST have isCertified=\"true\", every certified value MUST carry a measurement uncertainty (RMC-006 to RMC-009), and the certificate MUST state the metrological traceability of the certified values (RMC-001). - productInformationSheet: isCertified MUST NOT be set to \"true\" on any properties block (PIS-001, PIS-003), so that a product information sheet cannot present values as certified.",
               "rules": []
             }
           ],
@@ -27194,31 +27188,37 @@
               "id": "DRMD-003",
               "role": "error",
               "test": "drmd:propertiesList/drmd:properties",
-              "description": "[DRMD-003] Every DRMD document MUST contain at least one properties block with measurement data (ISO 33401:2024, \u00a75.2.15, Property of interest)."
+              "description": "[DRMD-003] Every DRMD document MUST contain at least one properties block with measurement data (ISO 33401:2024, 5.2.15, Property of interest)."
             },
             {
               "id": "DRMD-009",
               "role": "error",
               "test": "drmd:results/drmd:result",
-              "description": "[DRMD-009] Every properties block MUST contain at least one result entry with measurement data (ISO 33401:2024, \u00a75.2.15, Property of interest)."
+              "description": "[DRMD-009] Every properties block MUST contain at least one result entry with measurement data (ISO 33401:2024, 5.2.15, Property of interest)."
             },
             {
               "id": "DRMD-014",
               "role": "conditional-error",
-              "test": "drmd:procedures",
-              "description": "[DRMD-014] Each properties block MUST include measurement procedures whenever applicable. This combines two ISO requirements: procedures for operationally defined measurands (ISO 33401:2024, \u00a75.2.14, 'Mandatory whenever applicable' for both document profiles) and procedures for non-operationally defined measurands (ISO 33401:2024, \u00a75.4.2, 'Recommended' for both document profiles). Taken together, the overall requirement is 'Mandatory whenever applicable'."
+              "test": "drmd:procedures[dcc:usedMethod/dcc:name/dcc:content[normalize-space(.) != '']]",
+              "description": "[DRMD-014] Each properties block MUST include measurement procedures whenever applicable. This combines two ISO requirements: procedures for operationally defined measurands (ISO 33401:2024, 5.2.14, 'Mandatory whenever applicable' for both document types) and procedures for non-operationally defined measurands (ISO 33401:2024, 5.4.2, 'Recommended' for both document types). Taken together, the overall requirement is 'Mandatory whenever applicable'."
             },
             {
               "id": "RMC-002",
               "role": "error",
-              "test": "drmd:propertiesList/drmd:properties[@isCertified = 'true']",
-              "description": "[RMC-002] Reference Material Certificates MUST have at least one properties block with the attribute isCertified=\"true\" containing certified property values (ISO 33401:2024, \u00a75.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate). A certificate without certified values is structurally invalid."
+              "test": "drmd:propertiesList/drmd:properties[(normalize-space(@isCertified) = 'true' or normalize-space(@isCertified) = '1')]",
+              "description": "[RMC-002] Reference Material Certificates MUST have at least one properties block with the attribute isCertified=\"true\" (or its equivalent \"1\") containing certified property values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate). A certificate without certified values does not meet ISO 33401:2024."
+            },
+            {
+              "id": "RMC-005",
+              "role": "warning",
+              "test": "drmd:propertiesList/drmd:properties[(normalize-space(@isCertified) = 'true' or normalize-space(@isCertified) = '1')]/drmd:procedures[dcc:usedMethod/dcc:name/dcc:content[normalize-space(.) != '']]",
+              "description": "[RMC-005] Reference Material Certificates SHOULD document the measurement procedures used for certified properties (ISO 33401:2024, 5.4.2, Measurement procedures for non-operationally defined measurands: 'Recommended' for both document types)."
             },
             {
               "id": "PIS-003",
               "role": "error",
-              "test": "not(@isCertified = 'true')",
-              "description": "[PIS-003] In productInformationSheet documents, individual properties blocks MUST NOT have isCertified=\"true\". This attribute should be omitted or set to \"false\" for all property blocks in a Product Information Sheet. Certified property values are only permitted in referenceMaterialCertificate documents."
+              "test": "not(normalize-space(@isCertified) = 'true' or normalize-space(@isCertified) = '1')",
+              "description": "[PIS-003] In productInformationSheet documents, individual properties blocks MUST NOT have isCertified=\"true\" (or its equivalent \"1\"). This attribute should be omitted or set to \"false\" for all property blocks in a Product Information Sheet. Certified property values are only permitted in referenceMaterialCertificate documents."
             }
           ],
           "children": [
@@ -27636,21 +27636,15 @@
               "compositor": "sequence",
               "abstract": false,
               "substitutions": [],
-              "description": "The measurement procedures, with details such as methods, instruments and referenced standards (e.g., ISO 11885), to enable procedural replication. NOTE: This element covers both applied measurement procedures (methods used to establish the property values) and intended measurement procedures (methods for which the material is suited). Producers are encouraged to clearly distinguish between these in the method descriptions. ISO 33401:2024, \u00a75.2.14 makes procedures for operationally defined measurands 'mandatory whenever applicable'; \u00a75.4.2 makes procedures for non-operationally defined measurands 'recommended' for both document profiles. Taken together, the overall requirement is 'mandatory whenever applicable'. The companion Schematron rule DRMD-014 (conditional-error) enforces the presence of procedures; RMC-005 (warning) provides an additional advisory for certified property blocks.",
+              "description": "The measurement procedures, with details such as methods, instruments and referenced standards (e.g., ISO 11885), to enable procedural replication. NOTE: This element covers both applied measurement procedures (methods used to establish the property values) and intended measurement procedures (methods for which the material is suited). Producers are encouraged to clearly distinguish between these in the method descriptions. ISO 33401:2024, 5.2.14 makes procedures for operationally defined measurands 'mandatory whenever applicable'; 5.4.2 makes procedures for non-operationally defined measurands 'recommended' for both document types. Taken together, the overall requirement is 'mandatory whenever applicable'. The companion Schematron rule DRMD-014 (conditional-error) enforces the presence of procedures; RMC-005 (warning) provides an additional advisory for certified property blocks.",
               "path": "digitalReferenceMaterialDocument/propertiesList/properties/procedures",
               "attributes": [],
               "rules": [
                 {
                   "id": "DRMD-014",
                   "role": "conditional-error",
-                  "test": "drmd:procedures",
-                  "description": "[DRMD-014] Each properties block MUST include measurement procedures whenever applicable. This combines two ISO requirements: procedures for operationally defined measurands (ISO 33401:2024, \u00a75.2.14, 'Mandatory whenever applicable' for both document profiles) and procedures for non-operationally defined measurands (ISO 33401:2024, \u00a75.4.2, 'Recommended' for both document profiles). Taken together, the overall requirement is 'Mandatory whenever applicable'."
-                },
-                {
-                  "id": "RMC-005",
-                  "role": "warning",
-                  "test": "drmd:propertiesList/drmd:properties[@isCertified = 'true']/drmd:procedures",
-                  "description": "[RMC-005] Reference Material Certificates SHOULD document the measurement procedures used for certified properties (ISO 33401:2024, \u00a75.4.2, Measurement procedures for non-operationally defined measurands: 'Recommended' for both document profiles)."
+                  "test": "drmd:procedures[dcc:usedMethod/dcc:name/dcc:content[normalize-space(.) != '']]",
+                  "description": "[DRMD-014] Each properties block MUST include measurement procedures whenever applicable. This combines two ISO requirements: procedures for operationally defined measurands (ISO 33401:2024, 5.2.14, 'Mandatory whenever applicable' for both document types) and procedures for non-operationally defined measurands (ISO 33401:2024, 5.4.2, 'Recommended' for both document types). Taken together, the overall requirement is 'Mandatory whenever applicable'."
                 }
               ],
               "children": [
@@ -32130,19 +32124,19 @@
                       "id": "DRMD-009",
                       "role": "error",
                       "test": "drmd:results/drmd:result",
-                      "description": "[DRMD-009] Every properties block MUST contain at least one result entry with measurement data (ISO 33401:2024, \u00a75.2.15, Property of interest)."
+                      "description": "[DRMD-009] Every properties block MUST contain at least one result entry with measurement data (ISO 33401:2024, 5.2.15, Property of interest)."
                     },
                     {
                       "id": "RMC-003",
                       "role": "error",
                       "test": "drmd:propertiesList/drmd:properties/drmd:results/drmd:result",
-                      "description": "[RMC-003] Reference Material Certificates MUST include property values (ISO 33401:2024, \u00a75.3.3, Property value and associated uncertainty)."
+                      "description": "[RMC-003] Reference Material Certificates MUST include property values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty)."
                     },
                     {
                       "id": "PIS-002",
                       "role": "error",
                       "test": "drmd:propertiesList/drmd:properties/drmd:results/drmd:result",
-                      "description": "[PIS-002] Product Information Sheets MUST include results where property values are assigned (ISO 33401:2024, \u00a75.2.15, Property of interest)."
+                      "description": "[PIS-002] Product Information Sheets MUST include results where property values are assigned (ISO 33401:2024, 5.2.15, Property of interest)."
                     }
                   ],
                   "children": [
@@ -32588,7 +32582,7 @@
                               "compositor": "sequence",
                               "abstract": false,
                               "substitutions": [],
-                              "description": "A quantity (value, unit and, where given, uncertainty) based on dcc:primitiveQuantityType, extended so that each quantity can carry its own property identifiers. This keeps a value and the identity of what was measured together, which matters most in tables with many analytes. UNITS AND QUANTITY KINDS The value is one of the choices offered by dcc:primitiveQuantityType: si:real, si:hybrid, si:complex, si:constant, si:realListXMLList, si:complexListXMLList, dcc:charsXMLList or dcc:noQuantity. - SI and SI-compatible units are written as D-SI unit strings in si:unit (for example \\gram, \\milli\\gram\\kilogram\\tothe{-1}). - A unit that D-SI cannot express is reported with si:hybrid: at least one si:real inside the hybrid carries the value in a machine-readable SI unit, and a sibling si:real carries the same value in the non-SI unit. The SI-encoded sibling is what keeps the value computable; the non-SI sibling preserves the form the field expects. Where the non-SI unit itself needs defining, dcc:nonSIUnit and dcc:nonSIDefinition inside properties/measurementMetaData carry that definition. - The KIND of quantity (for example MassFraction, Density, AmountOfSubstanceConcentration) is stated separately from the unit with si:quantityTypeQUDT, which D-SI types against the QUDT quantity-kind vocabulary. It is available inside si:real and the list variants, and is recommended for every certified value: it tells a consumer what was measured, which a unit alone does not. A QUDT quantity kind is not a substitute for a unit and never replaces si:unit.",
+                              "description": "A quantity (value, unit and, where given, uncertainty) based on dcc:primitiveQuantityType, extended so that each quantity can carry its own property identifiers. This keeps a value and the identity of what was measured together, which matters most in tables with many analytes. UNITS AND QUANTITY KINDS The value is one of the choices offered by dcc:primitiveQuantityType: si:real, si:hybrid, si:complex, si:constant, si:realListXMLList, si:complexListXMLList, dcc:charsXMLList or dcc:noQuantity. - SI and SI-compatible units are written as D-SI unit strings in si:unit (for example \\gram, \\milli\\gram\\kilogram\\tothe{-1}). - A unit that D-SI cannot express is reported with si:hybrid: at least one si:real inside the hybrid carries the value converted to a machine-readable SI unit, as the D-SI guide describes, and a sibling si:real carries the value in the non-SI unit. The SI-encoded sibling is what keeps the value computable; the non-SI sibling preserves the form the field expects. For a conventional scale whose value is computed from SI quantities (for example Brinell hardness, computed from the test force and the area of the indentation), the SI sibling gives that quantity, and dcc:nonSIDefinition states the relation. Where the non-SI unit itself needs defining, dcc:nonSIUnit and dcc:nonSIDefinition inside properties/measurementMetaData carry that definition. A value on a conventional reference scale with no SI equivalent (an ordinal quantity such as an octane number) has no machine-readable D-SI form; give it as dcc:noQuantity, with the value and its scale in the text. - The KIND of quantity (for example MassFraction, Density, AmountOfSubstanceConcentration) is stated separately from the unit with si:quantityTypeQUDT, which D-SI types against the QUDT quantity-kind vocabulary. It is available inside si:real and the list variants, and is recommended for every certified value: it states the kind of quantity, which a unit alone does not (a mass fraction and a volume fraction share the unit \\one). It does not replace the description of the measurand. A QUDT quantity kind is not a substitute for a unit and never replaces si:unit.",
                               "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/list/quantity",
                               "attributes": [
                                 {
@@ -32617,8 +32611,20 @@
                                 {
                                   "id": "RMC-007",
                                   "role": "error",
-                                  "test": "si:real/si:measurementUncertaintyUnivariate or si:real/si:expandedUnc or si:real/si:coverageInterval",
-                                  "description": "[RMC-007] Certified property values in list quantities expressed as si:real MUST include measurement uncertainty. Each si:real quantity in a certified data list must carry uncertainty information (ISO 33401:2024, \u00a75.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                  "test": "si:real[si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval] or si:complex[si:ellipsoidalRegion or si:rectangularRegion] or si:constant[si:valueStandardMU or si:uncertainty]",
+                                  "description": "[RMC-007] Certified property values in list quantities expressed as si:real, si:complex or si:constant MUST include measurement uncertainty, in one of the forms that D-SI provides for them (see RMC-006). Each quantity in a certified data list must carry uncertainty information (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                },
+                                {
+                                  "id": "RMC-008",
+                                  "role": "error",
+                                  "test": "si:realListXMLList[si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList] or si:complexListXMLList[si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*]",
+                                  "description": "[RMC-008] Certified property values expressed as si:realListXMLList or si:complexListXMLList, as a single quantity or inside a list, MUST include measurement uncertainty: for si:realListXMLList one of si:measurementUncertaintyUnivariateXMLList, si:measurementUncertaintyMultivariateXMLList, si:ellipsoidalRegionXMLList, si:rectangularRegionXMLList, or the older si:expandedUncXMLList or si:coverageIntervalXMLList; for si:complexListXMLList a non-empty si:measurementUncertaintyBivariateXMLList or si:measurementUncertaintyMultivariateXMLList. This is required for all certified values in Reference Material Certificates (ISO 33401:2024, 5.3.3)."
+                                },
+                                {
+                                  "id": "RMC-009",
+                                  "role": "error",
+                                  "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                  "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
                                 }
                               ],
                               "children": [
@@ -33013,7 +33019,20 @@
                                   "description": "",
                                   "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/list/quantity/real",
                                   "attributes": [],
-                                  "rules": [],
+                                  "rules": [
+                                    {
+                                      "id": "RMC-007",
+                                      "role": "error",
+                                      "test": "si:real[si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval] or si:complex[si:ellipsoidalRegion or si:rectangularRegion] or si:constant[si:valueStandardMU or si:uncertainty]",
+                                      "description": "[RMC-007] Certified property values in list quantities expressed as si:real, si:complex or si:constant MUST include measurement uncertainty, in one of the forms that D-SI provides for them (see RMC-006). Each quantity in a certified data list must carry uncertainty information (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                    },
+                                    {
+                                      "id": "RMC-009",
+                                      "role": "error",
+                                      "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                      "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                    }
+                                  ],
                                   "children": [
                                     {
                                       "name": "label",
@@ -33123,14 +33142,7 @@
                                       "description": "",
                                       "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/list/quantity/real/measurementUncertaintyUnivariate",
                                       "attributes": [],
-                                      "rules": [
-                                        {
-                                          "id": "RMC-007",
-                                          "role": "error",
-                                          "test": "si:real/si:measurementUncertaintyUnivariate or si:real/si:expandedUnc or si:real/si:coverageInterval",
-                                          "description": "[RMC-007] Certified property values in list quantities expressed as si:real MUST include measurement uncertainty. Each si:real quantity in a certified data list must carry uncertainty information (ISO 33401:2024, \u00a75.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
-                                        }
-                                      ],
+                                      "rules": [],
                                       "children": [],
                                       "group": 1127,
                                       "groupCardinality": "[0..1]"
@@ -33147,14 +33159,7 @@
                                       "description": "[deprecated element] use si:expandedMU",
                                       "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/list/quantity/real/expandedUnc",
                                       "attributes": [],
-                                      "rules": [
-                                        {
-                                          "id": "RMC-007",
-                                          "role": "error",
-                                          "test": "si:real/si:measurementUncertaintyUnivariate or si:real/si:expandedUnc or si:real/si:coverageInterval",
-                                          "description": "[RMC-007] Certified property values in list quantities expressed as si:real MUST include measurement uncertainty. Each si:real quantity in a certified data list must carry uncertainty information (ISO 33401:2024, \u00a75.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
-                                        }
-                                      ],
+                                      "rules": [],
                                       "children": [],
                                       "group": 1127,
                                       "groupCardinality": "[0..1]"
@@ -33171,14 +33176,7 @@
                                       "description": "[deprecated element] use si:coverageIntervalMU",
                                       "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/list/quantity/real/coverageInterval",
                                       "attributes": [],
-                                      "rules": [
-                                        {
-                                          "id": "RMC-007",
-                                          "role": "error",
-                                          "test": "si:real/si:measurementUncertaintyUnivariate or si:real/si:expandedUnc or si:real/si:coverageInterval",
-                                          "description": "[RMC-007] Certified property values in list quantities expressed as si:real MUST include measurement uncertainty. Each si:real quantity in a certified data list must carry uncertainty information (ISO 33401:2024, \u00a75.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
-                                        }
-                                      ],
+                                      "rules": [],
                                       "children": [],
                                       "group": 1127,
                                       "groupCardinality": "[0..1]"
@@ -33264,7 +33262,14 @@
                                       "description": "",
                                       "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/list/quantity/hybrid/realList",
                                       "attributes": [],
-                                      "rules": [],
+                                      "rules": [
+                                        {
+                                          "id": "RMC-009",
+                                          "role": "error",
+                                          "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                          "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                        }
+                                      ],
                                       "children": [],
                                       "group": 1130,
                                       "groupCardinality": "[1..1]"
@@ -33281,7 +33286,14 @@
                                       "description": "",
                                       "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/list/quantity/hybrid/realListXMLList",
                                       "attributes": [],
-                                      "rules": [],
+                                      "rules": [
+                                        {
+                                          "id": "RMC-009",
+                                          "role": "error",
+                                          "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                          "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                        }
+                                      ],
                                       "children": [],
                                       "group": 1130,
                                       "groupCardinality": "[1..1]"
@@ -33298,7 +33310,14 @@
                                       "description": "",
                                       "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/list/quantity/hybrid/complexList",
                                       "attributes": [],
-                                      "rules": [],
+                                      "rules": [
+                                        {
+                                          "id": "RMC-009",
+                                          "role": "error",
+                                          "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                          "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                        }
+                                      ],
                                       "children": [],
                                       "group": 1130,
                                       "groupCardinality": "[1..1]"
@@ -33315,7 +33334,14 @@
                                       "description": "",
                                       "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/list/quantity/hybrid/complexListXMLList",
                                       "attributes": [],
-                                      "rules": [],
+                                      "rules": [
+                                        {
+                                          "id": "RMC-009",
+                                          "role": "error",
+                                          "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                          "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                        }
+                                      ],
                                       "children": [],
                                       "group": 1130,
                                       "groupCardinality": "[1..1]"
@@ -33353,7 +33379,20 @@
                                   "description": "",
                                   "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/list/quantity/complex",
                                   "attributes": [],
-                                  "rules": [],
+                                  "rules": [
+                                    {
+                                      "id": "RMC-007",
+                                      "role": "error",
+                                      "test": "si:real[si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval] or si:complex[si:ellipsoidalRegion or si:rectangularRegion] or si:constant[si:valueStandardMU or si:uncertainty]",
+                                      "description": "[RMC-007] Certified property values in list quantities expressed as si:real, si:complex or si:constant MUST include measurement uncertainty, in one of the forms that D-SI provides for them (see RMC-006). Each quantity in a certified data list must carry uncertainty information (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                    },
+                                    {
+                                      "id": "RMC-009",
+                                      "role": "error",
+                                      "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                      "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                    }
+                                  ],
                                   "children": [
                                     {
                                       "name": "label",
@@ -33561,7 +33600,20 @@
                                   "description": "",
                                   "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/list/quantity/constant",
                                   "attributes": [],
-                                  "rules": [],
+                                  "rules": [
+                                    {
+                                      "id": "RMC-007",
+                                      "role": "error",
+                                      "test": "si:real[si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval] or si:complex[si:ellipsoidalRegion or si:rectangularRegion] or si:constant[si:valueStandardMU or si:uncertainty]",
+                                      "description": "[RMC-007] Certified property values in list quantities expressed as si:real, si:complex or si:constant MUST include measurement uncertainty, in one of the forms that D-SI provides for them (see RMC-006). Each quantity in a certified data list must carry uncertainty information (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                    },
+                                    {
+                                      "id": "RMC-009",
+                                      "role": "error",
+                                      "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                      "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                    }
+                                  ],
                                   "children": [
                                     {
                                       "name": "label",
@@ -33720,7 +33772,20 @@
                                   "description": "",
                                   "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/list/quantity/realListXMLList",
                                   "attributes": [],
-                                  "rules": [],
+                                  "rules": [
+                                    {
+                                      "id": "RMC-008",
+                                      "role": "error",
+                                      "test": "si:realListXMLList[si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList] or si:complexListXMLList[si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*]",
+                                      "description": "[RMC-008] Certified property values expressed as si:realListXMLList or si:complexListXMLList, as a single quantity or inside a list, MUST include measurement uncertainty: for si:realListXMLList one of si:measurementUncertaintyUnivariateXMLList, si:measurementUncertaintyMultivariateXMLList, si:ellipsoidalRegionXMLList, si:rectangularRegionXMLList, or the older si:expandedUncXMLList or si:coverageIntervalXMLList; for si:complexListXMLList a non-empty si:measurementUncertaintyBivariateXMLList or si:measurementUncertaintyMultivariateXMLList. This is required for all certified values in Reference Material Certificates (ISO 33401:2024, 5.3.3)."
+                                    },
+                                    {
+                                      "id": "RMC-009",
+                                      "role": "error",
+                                      "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                      "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                    }
+                                  ],
                                   "children": [
                                     {
                                       "name": "labelXMLList",
@@ -33936,7 +34001,20 @@
                                   "description": "",
                                   "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/list/quantity/complexListXMLList",
                                   "attributes": [],
-                                  "rules": [],
+                                  "rules": [
+                                    {
+                                      "id": "RMC-008",
+                                      "role": "error",
+                                      "test": "si:realListXMLList[si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList] or si:complexListXMLList[si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*]",
+                                      "description": "[RMC-008] Certified property values expressed as si:realListXMLList or si:complexListXMLList, as a single quantity or inside a list, MUST include measurement uncertainty: for si:realListXMLList one of si:measurementUncertaintyUnivariateXMLList, si:measurementUncertaintyMultivariateXMLList, si:ellipsoidalRegionXMLList, si:rectangularRegionXMLList, or the older si:expandedUncXMLList or si:coverageIntervalXMLList; for si:complexListXMLList a non-empty si:measurementUncertaintyBivariateXMLList or si:measurementUncertaintyMultivariateXMLList. This is required for all certified values in Reference Material Certificates (ISO 33401:2024, 5.3.3)."
+                                    },
+                                    {
+                                      "id": "RMC-009",
+                                      "role": "error",
+                                      "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                      "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                    }
+                                  ],
                                   "children": [
                                     {
                                       "name": "labelXMLList",
@@ -34196,7 +34274,7 @@
                           "compositor": "choice",
                           "abstract": false,
                           "substitutions": [],
-                          "description": "A quantity (value, unit and, where given, uncertainty) based on dcc:primitiveQuantityType, extended so that each quantity can carry its own property identifiers. This keeps a value and the identity of what was measured together, which matters most in tables with many analytes. UNITS AND QUANTITY KINDS The value is one of the choices offered by dcc:primitiveQuantityType: si:real, si:hybrid, si:complex, si:constant, si:realListXMLList, si:complexListXMLList, dcc:charsXMLList or dcc:noQuantity. - SI and SI-compatible units are written as D-SI unit strings in si:unit (for example \\gram, \\milli\\gram\\kilogram\\tothe{-1}). - A unit that D-SI cannot express is reported with si:hybrid: at least one si:real inside the hybrid carries the value in a machine-readable SI unit, and a sibling si:real carries the same value in the non-SI unit. The SI-encoded sibling is what keeps the value computable; the non-SI sibling preserves the form the field expects. Where the non-SI unit itself needs defining, dcc:nonSIUnit and dcc:nonSIDefinition inside properties/measurementMetaData carry that definition. - The KIND of quantity (for example MassFraction, Density, AmountOfSubstanceConcentration) is stated separately from the unit with si:quantityTypeQUDT, which D-SI types against the QUDT quantity-kind vocabulary. It is available inside si:real and the list variants, and is recommended for every certified value: it tells a consumer what was measured, which a unit alone does not. A QUDT quantity kind is not a substitute for a unit and never replaces si:unit.",
+                          "description": "A quantity (value, unit and, where given, uncertainty) based on dcc:primitiveQuantityType, extended so that each quantity can carry its own property identifiers. This keeps a value and the identity of what was measured together, which matters most in tables with many analytes. UNITS AND QUANTITY KINDS The value is one of the choices offered by dcc:primitiveQuantityType: si:real, si:hybrid, si:complex, si:constant, si:realListXMLList, si:complexListXMLList, dcc:charsXMLList or dcc:noQuantity. - SI and SI-compatible units are written as D-SI unit strings in si:unit (for example \\gram, \\milli\\gram\\kilogram\\tothe{-1}). - A unit that D-SI cannot express is reported with si:hybrid: at least one si:real inside the hybrid carries the value converted to a machine-readable SI unit, as the D-SI guide describes, and a sibling si:real carries the value in the non-SI unit. The SI-encoded sibling is what keeps the value computable; the non-SI sibling preserves the form the field expects. For a conventional scale whose value is computed from SI quantities (for example Brinell hardness, computed from the test force and the area of the indentation), the SI sibling gives that quantity, and dcc:nonSIDefinition states the relation. Where the non-SI unit itself needs defining, dcc:nonSIUnit and dcc:nonSIDefinition inside properties/measurementMetaData carry that definition. A value on a conventional reference scale with no SI equivalent (an ordinal quantity such as an octane number) has no machine-readable D-SI form; give it as dcc:noQuantity, with the value and its scale in the text. - The KIND of quantity (for example MassFraction, Density, AmountOfSubstanceConcentration) is stated separately from the unit with si:quantityTypeQUDT, which D-SI types against the QUDT quantity-kind vocabulary. It is available inside si:real and the list variants, and is recommended for every certified value: it states the kind of quantity, which a unit alone does not (a mass fraction and a volume fraction share the unit \\one). It does not replace the description of the measurand. A QUDT quantity kind is not a substitute for a unit and never replaces si:unit.",
                           "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity",
                           "attributes": [
                             {
@@ -34225,20 +34303,20 @@
                             {
                               "id": "RMC-006",
                               "role": "error",
-                              "test": "si:real/si:measurementUncertaintyUnivariate or si:real/si:expandedUnc or si:real/si:coverageInterval",
-                              "description": "[RMC-006] Certified property values expressed as si:real quantities MUST include measurement uncertainty (one of: si:measurementUncertaintyUnivariate, si:expandedUnc, or si:coverageInterval). This is required for all certified values in Reference Material Certificates (ISO 33401:2024, \u00a75.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                              "test": "si:real[si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval] or si:complex[si:ellipsoidalRegion or si:rectangularRegion] or si:constant[si:valueStandardMU or si:uncertainty]",
+                              "description": "[RMC-006] A certified property value given as a single si:real, si:complex or si:constant quantity MUST include its measurement uncertainty, in one of the forms that D-SI provides for it (si:real: si:measurementUncertaintyUnivariate, or the older si:expandedUnc or si:coverageInterval; si:complex: si:ellipsoidalRegion or si:rectangularRegion; si:constant: si:valueStandardMU or si:uncertainty). This is required for all certified values in Reference Material Certificates (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
                             },
                             {
                               "id": "RMC-008",
                               "role": "error",
-                              "test": "si:realListXMLList/si:measurementUncertaintyUnivariateXMLList or si:realListXMLList/si:expandedUncXMLList or si:realListXMLList/si:coverageIntervalXMLList",
-                              "description": "[RMC-008] Certified property values expressed as si:realListXMLList MUST include measurement uncertainty (one of: si:measurementUncertaintyUnivariateXMLList, si:expandedUncXMLList, or si:coverageIntervalXMLList). This is required for all certified values in Reference Material Certificates (ISO 33401:2024, \u00a75.3.3)."
+                              "test": "si:realListXMLList[si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList] or si:complexListXMLList[si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*]",
+                              "description": "[RMC-008] Certified property values expressed as si:realListXMLList or si:complexListXMLList, as a single quantity or inside a list, MUST include measurement uncertainty: for si:realListXMLList one of si:measurementUncertaintyUnivariateXMLList, si:measurementUncertaintyMultivariateXMLList, si:ellipsoidalRegionXMLList, si:rectangularRegionXMLList, or the older si:expandedUncXMLList or si:coverageIntervalXMLList; for si:complexListXMLList a non-empty si:measurementUncertaintyBivariateXMLList or si:measurementUncertaintyMultivariateXMLList. This is required for all certified values in Reference Material Certificates (ISO 33401:2024, 5.3.3)."
                             },
                             {
                               "id": "RMC-009",
                               "role": "error",
-                              "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)])",
-                              "description": "[RMC-009] In certified properties blocks, every si:real quantity nested within a si:hybrid container MUST include measurement uncertainty (ISO 33401:2024, \u00a75.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                              "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                              "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
                             }
                           ],
                           "children": [
@@ -35007,10 +35085,16 @@
                               "attributes": [],
                               "rules": [
                                 {
+                                  "id": "RMC-006",
+                                  "role": "error",
+                                  "test": "si:real[si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval] or si:complex[si:ellipsoidalRegion or si:rectangularRegion] or si:constant[si:valueStandardMU or si:uncertainty]",
+                                  "description": "[RMC-006] A certified property value given as a single si:real, si:complex or si:constant quantity MUST include its measurement uncertainty, in one of the forms that D-SI provides for it (si:real: si:measurementUncertaintyUnivariate, or the older si:expandedUnc or si:coverageInterval; si:complex: si:ellipsoidalRegion or si:rectangularRegion; si:constant: si:valueStandardMU or si:uncertainty). This is required for all certified values in Reference Material Certificates (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                },
+                                {
                                   "id": "RMC-009",
                                   "role": "error",
-                                  "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)])",
-                                  "description": "[RMC-009] In certified properties blocks, every si:real quantity nested within a si:hybrid container MUST include measurement uncertainty (ISO 33401:2024, \u00a75.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                  "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                  "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
                                 }
                               ],
                               "children": [
@@ -35122,14 +35206,7 @@
                                   "description": "",
                                   "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/real/measurementUncertaintyUnivariate",
                                   "attributes": [],
-                                  "rules": [
-                                    {
-                                      "id": "RMC-006",
-                                      "role": "error",
-                                      "test": "si:real/si:measurementUncertaintyUnivariate or si:real/si:expandedUnc or si:real/si:coverageInterval",
-                                      "description": "[RMC-006] Certified property values expressed as si:real quantities MUST include measurement uncertainty (one of: si:measurementUncertaintyUnivariate, si:expandedUnc, or si:coverageInterval). This is required for all certified values in Reference Material Certificates (ISO 33401:2024, \u00a75.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
-                                    }
-                                  ],
+                                  "rules": [],
                                   "children": [
                                     {
                                       "name": "standardMU",
@@ -35198,14 +35275,7 @@
                                   "description": "[deprecated element] use si:expandedMU",
                                   "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/real/expandedUnc",
                                   "attributes": [],
-                                  "rules": [
-                                    {
-                                      "id": "RMC-006",
-                                      "role": "error",
-                                      "test": "si:real/si:measurementUncertaintyUnivariate or si:real/si:expandedUnc or si:real/si:coverageInterval",
-                                      "description": "[RMC-006] Certified property values expressed as si:real quantities MUST include measurement uncertainty (one of: si:measurementUncertaintyUnivariate, si:expandedUnc, or si:coverageInterval). This is required for all certified values in Reference Material Certificates (ISO 33401:2024, \u00a75.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
-                                    }
-                                  ],
+                                  "rules": [],
                                   "children": [
                                     {
                                       "name": "uncertainty",
@@ -35283,14 +35353,7 @@
                                   "description": "[deprecated element] use si:coverageIntervalMU",
                                   "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/real/coverageInterval",
                                   "attributes": [],
-                                  "rules": [
-                                    {
-                                      "id": "RMC-006",
-                                      "role": "error",
-                                      "test": "si:real/si:measurementUncertaintyUnivariate or si:real/si:expandedUnc or si:real/si:coverageInterval",
-                                      "description": "[RMC-006] Certified property values expressed as si:real quantities MUST include measurement uncertainty (one of: si:measurementUncertaintyUnivariate, si:expandedUnc, or si:coverageInterval). This is required for all certified values in Reference Material Certificates (ISO 33401:2024, \u00a75.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
-                                    }
-                                  ],
+                                  "rules": [],
                                   "children": [
                                     {
                                       "name": "standardUnc",
@@ -35818,7 +35881,14 @@
                                       "description": "",
                                       "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/hybrid/list/realList",
                                       "attributes": [],
-                                      "rules": [],
+                                      "rules": [
+                                        {
+                                          "id": "RMC-009",
+                                          "role": "error",
+                                          "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                          "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                        }
+                                      ],
                                       "children": [],
                                       "group": 1201,
                                       "groupCardinality": "[1..*]",
@@ -35836,7 +35906,14 @@
                                       "description": "",
                                       "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/hybrid/list/realListXMLList",
                                       "attributes": [],
-                                      "rules": [],
+                                      "rules": [
+                                        {
+                                          "id": "RMC-009",
+                                          "role": "error",
+                                          "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                          "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                        }
+                                      ],
                                       "children": [],
                                       "group": 1201,
                                       "groupCardinality": "[1..*]",
@@ -35854,7 +35931,14 @@
                                       "description": "",
                                       "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/hybrid/list/complexList",
                                       "attributes": [],
-                                      "rules": [],
+                                      "rules": [
+                                        {
+                                          "id": "RMC-009",
+                                          "role": "error",
+                                          "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                          "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                        }
+                                      ],
                                       "children": [],
                                       "group": 1201,
                                       "groupCardinality": "[1..*]",
@@ -35872,7 +35956,14 @@
                                       "description": "",
                                       "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/hybrid/list/complexListXMLList",
                                       "attributes": [],
-                                      "rules": [],
+                                      "rules": [
+                                        {
+                                          "id": "RMC-009",
+                                          "role": "error",
+                                          "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                          "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                        }
+                                      ],
                                       "children": [],
                                       "group": 1201,
                                       "groupCardinality": "[1..*]",
@@ -35912,7 +36003,14 @@
                                   "description": "",
                                   "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/hybrid/realList",
                                   "attributes": [],
-                                  "rules": [],
+                                  "rules": [
+                                    {
+                                      "id": "RMC-009",
+                                      "role": "error",
+                                      "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                      "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                    }
+                                  ],
                                   "children": [
                                     {
                                       "name": "label",
@@ -36090,7 +36188,14 @@
                                   "description": "",
                                   "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/hybrid/realListXMLList",
                                   "attributes": [],
-                                  "rules": [],
+                                  "rules": [
+                                    {
+                                      "id": "RMC-009",
+                                      "role": "error",
+                                      "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                      "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                    }
+                                  ],
                                   "children": [
                                     {
                                       "name": "labelXMLList",
@@ -36306,7 +36411,14 @@
                                   "description": "",
                                   "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/hybrid/complexList",
                                   "attributes": [],
-                                  "rules": [],
+                                  "rules": [
+                                    {
+                                      "id": "RMC-009",
+                                      "role": "error",
+                                      "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                      "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                    }
+                                  ],
                                   "children": [
                                     {
                                       "name": "label",
@@ -36469,7 +36581,14 @@
                                   "description": "",
                                   "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/hybrid/complexListXMLList",
                                   "attributes": [],
-                                  "rules": [],
+                                  "rules": [
+                                    {
+                                      "id": "RMC-009",
+                                      "role": "error",
+                                      "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                      "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                    }
+                                  ],
                                   "children": [
                                     {
                                       "name": "labelXMLList",
@@ -36836,7 +36955,20 @@
                               "description": "",
                               "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/complex",
                               "attributes": [],
-                              "rules": [],
+                              "rules": [
+                                {
+                                  "id": "RMC-006",
+                                  "role": "error",
+                                  "test": "si:real[si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval] or si:complex[si:ellipsoidalRegion or si:rectangularRegion] or si:constant[si:valueStandardMU or si:uncertainty]",
+                                  "description": "[RMC-006] A certified property value given as a single si:real, si:complex or si:constant quantity MUST include its measurement uncertainty, in one of the forms that D-SI provides for it (si:real: si:measurementUncertaintyUnivariate, or the older si:expandedUnc or si:coverageInterval; si:complex: si:ellipsoidalRegion or si:rectangularRegion; si:constant: si:valueStandardMU or si:uncertainty). This is required for all certified values in Reference Material Certificates (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                },
+                                {
+                                  "id": "RMC-009",
+                                  "role": "error",
+                                  "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                  "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                }
+                              ],
                               "children": [
                                 {
                                   "name": "label",
@@ -37166,7 +37298,20 @@
                               "description": "",
                               "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/constant",
                               "attributes": [],
-                              "rules": [],
+                              "rules": [
+                                {
+                                  "id": "RMC-006",
+                                  "role": "error",
+                                  "test": "si:real[si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval] or si:complex[si:ellipsoidalRegion or si:rectangularRegion] or si:constant[si:valueStandardMU or si:uncertainty]",
+                                  "description": "[RMC-006] A certified property value given as a single si:real, si:complex or si:constant quantity MUST include its measurement uncertainty, in one of the forms that D-SI provides for it (si:real: si:measurementUncertaintyUnivariate, or the older si:expandedUnc or si:coverageInterval; si:complex: si:ellipsoidalRegion or si:rectangularRegion; si:constant: si:valueStandardMU or si:uncertainty). This is required for all certified values in Reference Material Certificates (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                },
+                                {
+                                  "id": "RMC-009",
+                                  "role": "error",
+                                  "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                  "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                }
+                              ],
                               "children": [
                                 {
                                   "name": "label",
@@ -37325,7 +37470,20 @@
                               "description": "",
                               "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/realListXMLList",
                               "attributes": [],
-                              "rules": [],
+                              "rules": [
+                                {
+                                  "id": "RMC-008",
+                                  "role": "error",
+                                  "test": "si:realListXMLList[si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList] or si:complexListXMLList[si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*]",
+                                  "description": "[RMC-008] Certified property values expressed as si:realListXMLList or si:complexListXMLList, as a single quantity or inside a list, MUST include measurement uncertainty: for si:realListXMLList one of si:measurementUncertaintyUnivariateXMLList, si:measurementUncertaintyMultivariateXMLList, si:ellipsoidalRegionXMLList, si:rectangularRegionXMLList, or the older si:expandedUncXMLList or si:coverageIntervalXMLList; for si:complexListXMLList a non-empty si:measurementUncertaintyBivariateXMLList or si:measurementUncertaintyMultivariateXMLList. This is required for all certified values in Reference Material Certificates (ISO 33401:2024, 5.3.3)."
+                                },
+                                {
+                                  "id": "RMC-009",
+                                  "role": "error",
+                                  "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                  "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                }
+                              ],
                               "children": [
                                 {
                                   "name": "labelXMLList",
@@ -37435,14 +37593,7 @@
                                   "description": "",
                                   "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/realListXMLList/measurementUncertaintyUnivariateXMLList",
                                   "attributes": [],
-                                  "rules": [
-                                    {
-                                      "id": "RMC-008",
-                                      "role": "error",
-                                      "test": "si:realListXMLList/si:measurementUncertaintyUnivariateXMLList or si:realListXMLList/si:expandedUncXMLList or si:realListXMLList/si:coverageIntervalXMLList",
-                                      "description": "[RMC-008] Certified property values expressed as si:realListXMLList MUST include measurement uncertainty (one of: si:measurementUncertaintyUnivariateXMLList, si:expandedUncXMLList, or si:coverageIntervalXMLList). This is required for all certified values in Reference Material Certificates (ISO 33401:2024, \u00a75.3.3)."
-                                    }
-                                  ],
+                                  "rules": [],
                                   "children": [
                                     {
                                       "name": "standardMUXMLList",
@@ -37511,14 +37662,7 @@
                                   "description": "[deprecated type] use si:expandedMUXMLListType",
                                   "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/realListXMLList/expandedUncXMLList",
                                   "attributes": [],
-                                  "rules": [
-                                    {
-                                      "id": "RMC-008",
-                                      "role": "error",
-                                      "test": "si:realListXMLList/si:measurementUncertaintyUnivariateXMLList or si:realListXMLList/si:expandedUncXMLList or si:realListXMLList/si:coverageIntervalXMLList",
-                                      "description": "[RMC-008] Certified property values expressed as si:realListXMLList MUST include measurement uncertainty (one of: si:measurementUncertaintyUnivariateXMLList, si:expandedUncXMLList, or si:coverageIntervalXMLList). This is required for all certified values in Reference Material Certificates (ISO 33401:2024, \u00a75.3.3)."
-                                    }
-                                  ],
+                                  "rules": [],
                                   "children": [
                                     {
                                       "name": "uncertaintyXMLList",
@@ -37596,14 +37740,7 @@
                                   "description": "[deprecated type] use si:coverageIntervalMUXMLListType",
                                   "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/realListXMLList/coverageIntervalXMLList",
                                   "attributes": [],
-                                  "rules": [
-                                    {
-                                      "id": "RMC-008",
-                                      "role": "error",
-                                      "test": "si:realListXMLList/si:measurementUncertaintyUnivariateXMLList or si:realListXMLList/si:expandedUncXMLList or si:realListXMLList/si:coverageIntervalXMLList",
-                                      "description": "[RMC-008] Certified property values expressed as si:realListXMLList MUST include measurement uncertainty (one of: si:measurementUncertaintyUnivariateXMLList, si:expandedUncXMLList, or si:coverageIntervalXMLList). This is required for all certified values in Reference Material Certificates (ISO 33401:2024, \u00a75.3.3)."
-                                    }
-                                  ],
+                                  "rules": [],
                                   "children": [
                                     {
                                       "name": "standardUncXMLList",
@@ -37908,7 +38045,20 @@
                               "description": "",
                               "path": "digitalReferenceMaterialDocument/propertiesList/properties/results/result/data/quantity/complexListXMLList",
                               "attributes": [],
-                              "rules": [],
+                              "rules": [
+                                {
+                                  "id": "RMC-008",
+                                  "role": "error",
+                                  "test": "si:realListXMLList[si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList] or si:complexListXMLList[si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*]",
+                                  "description": "[RMC-008] Certified property values expressed as si:realListXMLList or si:complexListXMLList, as a single quantity or inside a list, MUST include measurement uncertainty: for si:realListXMLList one of si:measurementUncertaintyUnivariateXMLList, si:measurementUncertaintyMultivariateXMLList, si:ellipsoidalRegionXMLList, si:rectangularRegionXMLList, or the older si:expandedUncXMLList or si:coverageIntervalXMLList; for si:complexListXMLList a non-empty si:measurementUncertaintyBivariateXMLList or si:measurementUncertaintyMultivariateXMLList. This is required for all certified values in Reference Material Certificates (ISO 33401:2024, 5.3.3)."
+                                },
+                                {
+                                  "id": "RMC-009",
+                                  "role": "error",
+                                  "test": "not(si:hybrid/si:real[not(si:measurementUncertaintyUnivariate or si:expandedUnc or si:coverageInterval)]) and not(si:hybrid/si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]) and not(si:hybrid/si:constant[not(si:valueStandardMU or si:uncertainty)]) and not(si:hybrid//si:realListXMLList[not(si:measurementUncertaintyUnivariateXMLList or si:expandedUncXMLList or si:coverageIntervalXMLList or si:measurementUncertaintyMultivariateXMLList/* or si:ellipsoidalRegionXMLList or si:rectangularRegionXMLList)]) and not(si:hybrid//si:complexListXMLList[not(si:measurementUncertaintyBivariateXMLList/* or si:measurementUncertaintyMultivariateXMLList/*)]) and not(si:hybrid//si:realList[not(si:listMeasurementUncertaintyUnivariate or si:listUnivariateUnc or si:ellipsoidalRegion or si:rectangularRegion or not(si:real[not(si:measurementUncertaintyUnivaraite or si:expandedUnc or si:coverageInterval)]))]) and not(si:hybrid//si:complexList[not(si:listBivariateUnc/* or si:ellipsoidalRegion or si:rectangularRegion or not(si:complex[not(si:ellipsoidalRegion or si:rectangularRegion)]))])",
+                                  "description": "[RMC-009] In certified properties blocks, every number nested within a si:hybrid container, as a single quantity or inside a list, MUST include measurement uncertainty, in one of the forms that D-SI provides for it: si:real, si:complex and si:constant as in RMC-006, si:realListXMLList and si:complexListXMLList as in RMC-008, and the lists si:realList, si:complexList and si:list with an uncertainty for the list or for each of its values (ISO 33401:2024, 5.3.3, Property value and associated uncertainty: 'Mandatory' for RM certificate)."
+                                }
+                              ],
                               "children": [
                                 {
                                   "name": "labelXMLList",
@@ -38288,7 +38438,7 @@
               "compositor": "sequence",
               "abstract": false,
               "substitutions": [],
-              "description": "Optional metadata arrays containing further details pertaining to the measurement data.",
+              "description": "Optional metadata on the measurements in this block, for example the definition of a unit outside the SI in dcc:nonSIUnit and dcc:nonSIDefinition.",
               "path": "digitalReferenceMaterialDocument/propertiesList/properties/measurementMetaData",
               "attributes": [],
               "rules": [],
@@ -54459,39 +54609,39 @@
       "compositor": "sequence",
       "abstract": false,
       "substitutions": [],
-      "description": "The ordered sequence of auxiliary, narrative operational notes for handling and use of the material, including storage information and pre-treatment directives.",
+      "description": "The statements on the material: intended use, commutability, storage, handling and use, metrological traceability, health and safety, subcontractors, legal notice, the reference to a certification report, and any further statement.",
       "path": "digitalReferenceMaterialDocument/statements",
       "attributes": [],
       "rules": [
         {
           "id": "DRMD-004",
           "role": "error",
-          "test": "drmd:intendedUse",
-          "description": "[DRMD-004] Every DRMD document MUST include an intendedUse statement defining the approved application scope (ISO 33401:2024, \u00a75.2.6, Intended use)."
+          "test": "drmd:intendedUse[dcc:content[normalize-space(.) != ''] or dcc:file or dcc:formula]",
+          "description": "[DRMD-004] Every DRMD document MUST include an intendedUse statement giving the main intended use of the material (ISO 33401:2024, 5.2.6, Intended use)."
         },
         {
           "id": "DRMD-005",
           "role": "error",
-          "test": "drmd:storageInformation",
-          "description": "[DRMD-005] Every DRMD document MUST include storageInformation specifying environmental storage conditions (ISO 33401:2024, \u00a75.2.10, Storage information)."
+          "test": "drmd:storageInformation[dcc:content[normalize-space(.) != ''] or dcc:file or dcc:formula]",
+          "description": "[DRMD-005] Every DRMD document MUST include storageInformation specifying environmental storage conditions (ISO 33401:2024, 5.2.10, Storage information)."
         },
         {
           "id": "DRMD-006",
           "role": "error",
-          "test": "drmd:instructionsForHandlingAndUse",
-          "description": "[DRMD-006] Every DRMD document MUST include instructionsForHandlingAndUse (ISO 33401:2024, \u00a75.2.11, Instructions for handling and use)."
+          "test": "drmd:instructionsForHandlingAndUse[dcc:content[normalize-space(.) != ''] or dcc:file or dcc:formula]",
+          "description": "[DRMD-006] Every DRMD document MUST include instructionsForHandlingAndUse (ISO 33401:2024, 5.2.11, Instructions for handling and use)."
         },
         {
           "id": "DRMD-013",
           "role": "conditional-error",
-          "test": "drmd:commutability",
-          "description": "[DRMD-013] Every DRMD document MUST include a commutability statement whenever applicable. Commutability is particularly important for reference materials intended for use with multiple measurement procedures (ISO 33401:2024, \u00a75.2.9, Commutability: 'Mandatory whenever applicable' for both document profiles)."
+          "test": "drmd:commutability[dcc:content[normalize-space(.) != ''] or dcc:file or dcc:formula]",
+          "description": "[DRMD-013] Every DRMD document MUST include a commutability statement whenever applicable. Commutability is particularly important for reference materials intended for use with multiple measurement procedures (ISO 33401:2024, 5.2.9, Commutability: 'Mandatory whenever applicable' for both document types)."
         },
         {
           "id": "DRMD-015",
           "role": "warning",
-          "test": "drmd:healthAndSafetyInformation",
-          "description": "[DRMD-015] DRMD documents SHOULD include healthAndSafetyInformation documenting hazardous material traits and protective equipment directives (ISO 33401:2024, \u00a75.4.3, Health and safety information: 'Recommended' for both document profiles)."
+          "test": "drmd:healthAndSafetyInformation[dcc:content[normalize-space(.) != ''] or dcc:file or dcc:formula]",
+          "description": "[DRMD-015] DRMD documents SHOULD include healthAndSafetyInformation: a statement on the safety data sheet and, for hazardous materials, the appropriate warnings (ISO 33401:2024, 5.4.3, Health and safety information: 'Recommended' for both document types)."
         }
       ],
       "children": [
@@ -54504,7 +54654,7 @@
           "compositor": "sequence",
           "abstract": false,
           "substitutions": [],
-          "description": "A mandatory metrological disclosure defining the explicitly intended application scope and target analytical techniques (e.g., spark-OES calibration). Where relevant, it also states uses for which the material is not suitable, to help prevent misapplication.",
+          "description": "The main intended use of the material (mandatory), for example the calibration of spark optical emission spectrometers or the validation of a measurement procedure. It gives users enough information to decide whether the material suits their purpose, and it can state restrictions on its use (ISO 33401:2024, 5.2.6).",
           "path": "digitalReferenceMaterialDocument/statements/intendedUse",
           "attributes": [
             {
@@ -54533,8 +54683,8 @@
             {
               "id": "DRMD-004",
               "role": "error",
-              "test": "drmd:intendedUse",
-              "description": "[DRMD-004] Every DRMD document MUST include an intendedUse statement defining the approved application scope (ISO 33401:2024, \u00a75.2.6, Intended use)."
+              "test": "drmd:intendedUse[dcc:content[normalize-space(.) != ''] or dcc:file or dcc:formula]",
+              "description": "[DRMD-004] Every DRMD document MUST include an intendedUse statement giving the main intended use of the material (ISO 33401:2024, 5.2.6, Intended use)."
             }
           ],
           "children": [
@@ -54870,7 +55020,7 @@
           "compositor": "sequence",
           "abstract": false,
           "substitutions": [],
-          "description": "A statement on commutability: how closely the reference material behaves like routine samples when measured with different measurement procedures. Particularly relevant for clinical and biological materials. PROFILE NOTE (ISO 33401:2024, \u00a75.2.9): This element is 'mandatory whenever applicable' for both document profiles. It is structurally optional in the XSD to accommodate materials where commutability is not applicable. Its presence is enforced by the companion Schematron rule DRMD-013 (conditional-error).",
+          "description": "A statement on commutability: how closely the reference material behaves like routine samples when measured with different measurement procedures. Particularly relevant for clinical and biological materials. DOCUMENT TYPES (ISO 33401:2024, 5.2.9): This element is 'mandatory whenever applicable' for both document types. It is structurally optional in the XSD to accommodate materials where commutability is not applicable. Its presence is enforced by the companion Schematron rule DRMD-013 (conditional-error).",
           "path": "digitalReferenceMaterialDocument/statements/commutability",
           "attributes": [
             {
@@ -54899,8 +55049,8 @@
             {
               "id": "DRMD-013",
               "role": "conditional-error",
-              "test": "drmd:commutability",
-              "description": "[DRMD-013] Every DRMD document MUST include a commutability statement whenever applicable. Commutability is particularly important for reference materials intended for use with multiple measurement procedures (ISO 33401:2024, \u00a75.2.9, Commutability: 'Mandatory whenever applicable' for both document profiles)."
+              "test": "drmd:commutability[dcc:content[normalize-space(.) != ''] or dcc:file or dcc:formula]",
+              "description": "[DRMD-013] Every DRMD document MUST include a commutability statement whenever applicable. Commutability is particularly important for reference materials intended for use with multiple measurement procedures (ISO 33401:2024, 5.2.9, Commutability: 'Mandatory whenever applicable' for both document types)."
             }
           ],
           "children": [
@@ -55236,7 +55386,7 @@
           "compositor": "sequence",
           "abstract": false,
           "substitutions": [],
-          "description": "Mandatory storage conditions (e.g., temperature, protection from light or moisture, inert gas) needed to keep the material stable and its property values valid.",
+          "description": "The storage conditions (mandatory), for example temperature, protection from light or moisture, or storage under inert gas, under which the stated property values remain valid (ISO 33401:2024, 5.2.10).",
           "path": "digitalReferenceMaterialDocument/statements/storageInformation",
           "attributes": [
             {
@@ -55265,8 +55415,8 @@
             {
               "id": "DRMD-005",
               "role": "error",
-              "test": "drmd:storageInformation",
-              "description": "[DRMD-005] Every DRMD document MUST include storageInformation specifying environmental storage conditions (ISO 33401:2024, \u00a75.2.10, Storage information)."
+              "test": "drmd:storageInformation[dcc:content[normalize-space(.) != ''] or dcc:file or dcc:formula]",
+              "description": "[DRMD-005] Every DRMD document MUST include storageInformation specifying environmental storage conditions (ISO 33401:2024, 5.2.10, Storage information)."
             }
           ],
           "children": [
@@ -55602,7 +55752,7 @@
           "compositor": "sequence",
           "abstract": false,
           "substitutions": [],
-          "description": "Mandatory preparation instructions detailing e.g., cleaning cycles, physical polishing constraints, and drying workflows required of operators before executing analytical calibrations.",
+          "description": "Instructions for handling and using the material (mandatory), for example how to open the container, how to homogenise, dry or reconstitute the material before use, and whether and how a unit may be used more than once (ISO 33401:2024, 5.2.11).",
           "path": "digitalReferenceMaterialDocument/statements/instructionsForHandlingAndUse",
           "attributes": [
             {
@@ -55631,8 +55781,8 @@
             {
               "id": "DRMD-006",
               "role": "error",
-              "test": "drmd:instructionsForHandlingAndUse",
-              "description": "[DRMD-006] Every DRMD document MUST include instructionsForHandlingAndUse (ISO 33401:2024, \u00a75.2.11, Instructions for handling and use)."
+              "test": "drmd:instructionsForHandlingAndUse[dcc:content[normalize-space(.) != ''] or dcc:file or dcc:formula]",
+              "description": "[DRMD-006] Every DRMD document MUST include instructionsForHandlingAndUse (ISO 33401:2024, 5.2.11, Instructions for handling and use)."
             }
           ],
           "children": [
@@ -55968,7 +56118,7 @@
           "compositor": "sequence",
           "abstract": false,
           "substitutions": [],
-          "description": "A narrative statement formalizing the chain of comparisons linking certified results back to the SI base units or international calibration benchmarks, supporting laboratory audit trails. PROFILE NOTE (ISO 33401:2024, \u00a75.3.4): This element is structurally optional in the XSD to accommodate productInformationSheet documents where metrological traceability is not required. For referenceMaterialCertificate documents, this element is MANDATORY and its presence is enforced by the companion Schematron rules (rule RMC-001).",
+          "description": "The statement of metrological traceability of the certified values: for each certified value, the reference to which it is metrologically traceable, for example the SI, and how traceability was established. DOCUMENT TYPES (ISO 33401:2024, 5.3.4): This element is structurally optional in the XSD to accommodate productInformationSheet documents where metrological traceability is not required. For referenceMaterialCertificate documents, this element is MANDATORY and its presence is enforced by the companion Schematron rules (rule RMC-001).",
           "path": "digitalReferenceMaterialDocument/statements/metrologicalTraceability",
           "attributes": [
             {
@@ -55997,8 +56147,8 @@
             {
               "id": "RMC-001",
               "role": "error",
-              "test": "drmd:statements/drmd:metrologicalTraceability",
-              "description": "[RMC-001] Reference Material Certificates MUST include a metrologicalTraceability statement formalizing the chain of comparisons linking certified results to SI base units or international calibration benchmarks (ISO 33401:2024, \u00a75.3.4, Metrological traceability: 'Mandatory' for RM certificate). This is not required for productInformationSheet documents."
+              "test": "drmd:statements/drmd:metrologicalTraceability[dcc:content[normalize-space(.) != ''] or dcc:file or dcc:formula]",
+              "description": "[RMC-001] Reference Material Certificates MUST include a metrologicalTraceability statement that gives, for the certified values, the reference to which they are metrologically traceable (ISO 33401:2024, 5.3.4, Metrological traceability: 'Mandatory' for RM certificate). This is not required for productInformationSheet documents."
             }
           ],
           "children": [
@@ -56334,7 +56484,7 @@
           "compositor": "sequence",
           "abstract": false,
           "substitutions": [],
-          "description": "Optional health and safety information, for example the hazards of the material and the protective measures to take. A safety data sheet (SDS) can be attached as a file. PROFILE NOTE (ISO 33401:2024, \u00a75.4.3): This element is 'recommended' for both document profiles. Its presence is encouraged by the companion Schematron rule DRMD-015 (warning).",
+          "description": "Optional health and safety information, for example a statement on the safety data sheet (SDS) and, for hazardous materials, the warnings that apply. The SDS can be attached as a file. DOCUMENT TYPES (ISO 33401:2024, 5.4.3): This element is 'recommended' for both document types. Its presence is encouraged by the companion Schematron rule DRMD-015 (warning).",
           "path": "digitalReferenceMaterialDocument/statements/healthAndSafetyInformation",
           "attributes": [
             {
@@ -56363,8 +56513,8 @@
             {
               "id": "DRMD-015",
               "role": "warning",
-              "test": "drmd:healthAndSafetyInformation",
-              "description": "[DRMD-015] DRMD documents SHOULD include healthAndSafetyInformation documenting hazardous material traits and protective equipment directives (ISO 33401:2024, \u00a75.4.3, Health and safety information: 'Recommended' for both document profiles)."
+              "test": "drmd:healthAndSafetyInformation[dcc:content[normalize-space(.) != ''] or dcc:file or dcc:formula]",
+              "description": "[DRMD-015] DRMD documents SHOULD include healthAndSafetyInformation: a statement on the safety data sheet and, for hazardous materials, the appropriate warnings (ISO 33401:2024, 5.4.3, Health and safety information: 'Recommended' for both document types)."
             }
           ],
           "children": [
@@ -56700,7 +56850,7 @@
           "compositor": "sequence",
           "abstract": false,
           "substitutions": [],
-          "description": "An optional transparency record mapping contributions from subcontracted partner laboratories, mainly used in interlaboratory studies.",
+          "description": "Optional information on subcontractors (ISO 33401:2024, 5.4.4): who contributed to producing the material under a subcontract, and what each of them did. Laboratories that took part in the characterisation can also be named here, with the methods they used.",
           "path": "digitalReferenceMaterialDocument/statements/subcontractors",
           "attributes": [
             {
@@ -57059,7 +57209,7 @@
           "compositor": "sequence",
           "abstract": false,
           "substitutions": [],
-          "description": "Optional legal notices, for example disclaimers, limitations of liability or the applicable jurisdiction.",
+          "description": "Optional legal notices (ISO 33401:2024, 5.4.6), for example disclaimers, limitations of liability or the applicable jurisdiction.",
           "path": "digitalReferenceMaterialDocument/statements/legalNotice",
           "attributes": [
             {
@@ -57418,7 +57568,7 @@
           "compositor": "sequence",
           "abstract": false,
           "substitutions": [],
-          "description": "An optional reference to the certification report, or to another report describing the characterisation, homogeneity and stability studies, given as a citation, a link or an attached file (ISO 33401:2024, \u00a75.4.7, Optional for both document profiles).",
+          "description": "An optional reference to the certification report, or to another report describing the characterisation, homogeneity and stability studies, given as a citation, a link or an attached file (ISO 33401:2024, 5.4.7, Optional for both document types).",
           "path": "digitalReferenceMaterialDocument/statements/referenceToCertificationReport",
           "attributes": [
             {
@@ -57777,7 +57927,7 @@
           "compositor": "sequence",
           "abstract": false,
           "substitutions": [],
-          "description": "A repeatable, generic catch-all narrative element designed to capture auxiliary operational notes for handling and use of the material that lack a dedicated element field.",
+          "description": "Any further statement for which no dedicated element exists, for example on the origin of the material. Repeatable.",
           "path": "digitalReferenceMaterialDocument/statements/statement",
           "attributes": [
             {

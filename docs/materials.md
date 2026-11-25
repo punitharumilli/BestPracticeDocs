@@ -54,14 +54,14 @@ The six child elements of each `material` entry are:
 | Child Element | Type | Required | Description |
 |---------------|------|----------|-------------|
 | **name** | `dcc:textType` | Mandatory | Human-readable product name |
-| **description** | `dcc:richContentType` | CRM: Mandatory / ProductInformationSheet: Optional | Physical form, composition, matrix information |
+| **description** | `dcc:richContentType` | RMC: Mandatory / PIS: Recommended | Physical form, composition, matrix information |
 | **materialClass** | `drmd:materialClassType` | Optional (repeatable) | Classification taxonomy assignment |
 | **minimumSampleSize** | `dcc:itemQuantityListType` | Mandatory whenever applicable | Minimum quantity for valid use |
 | **itemQuantities** | `dcc:itemQuantityListType` | Optional | Additional physical descriptors |
 | **materialIdentifiers** | `drmd:materialIdentifierListType` | **Mandatory** (ISO 5.2.3) | The unique identifier of the RM itself |
 
 !!! warning "Dual Validation Required"
-    The DRMD schema uses a **dual-profile architecture**. The XSD defines the structure, but profile-specific mandatory requirements (e.g., `description` being mandatory for CRM documents) are enforced by the companion **Schematron business rules** (`drmd-business-rules.sch`). Full compliance requires passing **both** validations.
+    DRMD documents are validated in two steps. The XSD defines the structure, but the requirements that depend on the document type (e.g., `description`, mandatory in a reference material certificate) are enforced by the companion **Schematron business rules** (`drmd-business-rules.sch`). Full compliance requires passing **both** validations.
 
 ## 4.1 Purpose and Use
 
@@ -107,7 +107,7 @@ The six child elements of each `material` entry are:
 ```
 
 !!! danger "Schematron Rule: DRMD-002"
-    Every DRMD document **MUST** contain at least one `material` entry in the materials catalogue (ISO 33401:2024, §5.2.4). Severity: **Error**. the document is non-compliant without at least one material.
+    Every DRMD document **MUST** contain at least one `material` entry in the materials catalogue (ISO 33401:2024, 5.2.4). Severity: **Error**. the document is non-compliant without at least one material.
 
 ## 4.3 Material Entry (`material`)
 
@@ -123,7 +123,7 @@ The six child elements of each `material` entry are:
 ```mermaid
 graph LR
     M["material"] --> NAME["name<br/><i>Required</i>"]
-    M --> DESC["description<br/><i>CRM: Required</i>"]
+    M --> DESC["description<br/><i>RMC: Required</i>"]
     M --> MC["materialClass<br/><i>0..∞</i>"]
     M --> MSS["minimumSampleSize<br/><i>Conditional</i>"]
     M --> IQ["itemQuantities<br/><i>Optional</i>"]
@@ -170,7 +170,7 @@ graph LR
 ```
 
 !!! danger "Schematron Rule: DRMD-007"
-    Every material entry **MUST** include a `name` element (ISO 33401:2024, §5.2.4). Severity: **Error**.
+    Every material entry **MUST** include a `name` element (ISO 33401:2024, 5.2.4). Severity: **Error**.
 
 ### 4.3.2 Description (`description`)
 
@@ -178,7 +178,7 @@ graph LR
 |----------|-------|
 | **Path** | `.../drmd:material/drmd:description` |
 | **Type** | `dcc:richContentType` |
-| **Cardinality** | CRM: **Mandatory** / ProductInformationSheet: **Optional** `[0..1]` |
+| **Cardinality** | RMC: **Mandatory** / PIS: **Recommended** `[0..1]` |
 
 **Purpose:** Structured descriptive content including narrative text, attachments, and formulas. Typically used for form factor, composition notes, packaging form, and hazards summary pointers.
 
@@ -220,7 +220,7 @@ graph LR
     ```
 
 !!! danger "Schematron Rule: RMC-011"
-    Reference Material Certificates **MUST** include a description for each material (ISO 33401:2024, §5.3.2). Severity: **Error**. This rule does **not** apply to `productInformationSheet` documents, but a description is still recommended (PIS-005, Severity: **Warning**).
+    Reference Material Certificates **MUST** include a description for each material (ISO 33401:2024, 5.3.2). Severity: **Error**. This rule does **not** apply to `productInformationSheet` documents, but a description is still recommended (PIS-005, Severity: **Warning**).
 
 ## 4.4 Material Classification (`materialClass`)
 
@@ -334,7 +334,7 @@ graph LR
     ```
 
 !!! danger "Schematron Rule: DRMD-008"
-    Each material entry **MUST** specify a `minimumSampleSize` whenever applicable to ensure representative sampling for homogeneity (ISO 33401:2024, §5.2.7). Severity: **Conditional Error**, absence may be valid if not applicable to the specific material, but absence of this field when a minimum sample size exists constitutes a violation.
+    Each material entry **MUST** specify a `minimumSampleSize` whenever applicable: the smallest amount of material for which the stated property values and uncertainties apply (ISO 33401:2024, 5.2.7). Severity: **Conditional Error**, absence may be valid if not applicable to the specific material, but absence of this field when a minimum sample size exists constitutes a violation.
 
 ### 4.5.2 Item Quantities (`itemQuantities`)
 
@@ -513,8 +513,8 @@ Material Identifiers provide the canonical, **machine-actionable keys** that ide
 !!! danger "This is where ISO 33401:2024, 5.2.3 is satisfied, and it is mandatory"
     ISO 33401:2024, 5.2.3 requires the RM document to carry **the unique identifier of the RM**,
     for both certificates and product information sheets. The standard describes it as a
-    combination of a product code and a batch number, `NMIJ CRM 7305-a`, `ERM-AC110`,
-    `NIST SRM 41`, distinguishable from any other RM issued by the same producer. Rule
+    product code, normally combined with a batch or lot number, for example `BAM-M386a`, that
+    distinguishes the RM from any other RM issued by the same producer. Rule
     **DRMD-016** enforces it as a hard error.
 
     **`coreData/uniqueIdentifier` does not satisfy this requirement.** That element identifies the
@@ -524,7 +524,7 @@ Material Identifiers provide the canonical, **machine-actionable keys** that ide
 
     Give at least a product-level identifier. Where units are produced in batches, add the batch
     or lot number as a second identifier. Where each unit is individually characterised, ISO
-    33401:2024, 5.2.3 asks for an additional identifier such as a serial number for that unit,
+    33401:2024, 5.2.3 asks for a further identifier for each unit, for example a serial number,
     so add it as a third.
 
 !!! warning "Match the label exactly"
@@ -662,12 +662,12 @@ The following Schematron rules directly govern the Materials section:
 
 | Rule ID | Scope | Severity | Description |
 |---------|-------|----------|-------------|
-| **DRMD-002** | All documents | Error | Every DRMD **MUST** contain at least one `material` entry (ISO 33401:2024, §5.2.4) |
-| **DRMD-007** | All documents | Error | Every `material` entry **MUST** include a `name` element (ISO 33401:2024, §5.2.4) |
-| **DRMD-008** | All documents | Conditional Error | Each `material` **MUST** specify `minimumSampleSize` whenever applicable (ISO 33401:2024, §5.2.7) |
-| **DRMD-016** | All documents | Error | Every `material` **MUST** carry at least one `materialIdentifier`, the unique identifier of the RM (ISO 33401:2024, §5.2.3) |
-| **RMC-011** | CRM only | Error | Reference Material Certificates **MUST** include a `description` for each material (ISO 33401:2024, §5.3.2) |
-| **PIS-005** | ProductInformationSheet only | Warning | Product Information Sheets **SHOULD** include a `description` for each material |
+| **DRMD-002** | All documents | Error | Every DRMD **MUST** contain at least one `material` entry (ISO 33401:2024, 5.2.4) |
+| **DRMD-007** | All documents | Error | Every `material` entry **MUST** include a `name` element (ISO 33401:2024, 5.2.4) |
+| **DRMD-008** | All documents | Conditional Error | Each `material` **MUST** specify `minimumSampleSize` whenever applicable (ISO 33401:2024, 5.2.7) |
+| **DRMD-016** | All documents | Error | Every `material` **MUST** carry at least one `materialIdentifier`, the unique identifier of the RM (ISO 33401:2024, 5.2.3) |
+| **RMC-011** | RMC only | Error | Reference material certificates **MUST** include a `description` for each material (ISO 33401:2024, 5.3.2) |
+| **PIS-005** | PIS only | Warning | Product information sheets **SHOULD** include a `description` for each material |
 
 ```mermaid
 graph LR
@@ -675,7 +675,7 @@ graph LR
     DOC -->|"DRMD-002"| MAT["At least 1 material"]
     MAT -->|"DRMD-007"| NAME["name required"]
     MAT -->|"DRMD-008"| MSS["minimumSampleSize<br/><i>when applicable</i>"]
-    MAT -->|"RMC-011<br/><i>CRM only</i>"| DESC["description required"]
+    MAT -->|"RMC-011<br/><i>RMC only</i>"| DESC["description required"]
     MAT -.->|"PIS-005<br/><i>PIS only</i>"| DESC2["description recommended"]
 
     style DOC fill:#e8eaf6,color:#000,stroke:#283593
@@ -699,7 +699,7 @@ graph LR
           <dcc:content lang="de">Aluminiumlegierung Scheibe BAM-M308a</dcc:content>
         </drmd:name>
 
-        <!-- Description (mandatory for CRM) -->
+        <!-- Description (mandatory in a reference material certificate) -->
         <drmd:description>
           <dcc:name>
             <dcc:content lang="en">Material description</dcc:content>

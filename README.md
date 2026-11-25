@@ -1,4 +1,19 @@
-# DRMD Guidance Document
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo/drmd-logo-on-white.png">
+    <img src="docs/assets/logo/drmd-logo.png" alt="Digital Reference Material Document (DRMD)" width="420">
+  </picture>
+</p>
+
+<h1 align="center">DRMD (Digital Reference Material Document) Guidance Document</h1>
+
+<p align="center">
+  <a href="https://github.com/BAMresearch/drmd-guidance/actions/workflows/deploy.yml"><img src="https://github.com/BAMresearch/drmd-guidance/actions/workflows/deploy.yml/badge.svg" alt="Deploy MkDocs to GitHub Pages"></a>
+  <a href="https://github.com/BAMresearch/drmd-schema"><img src="https://img.shields.io/badge/DRMD%20schema-1.0.0-0F2F6D" alt="For DRMD schema 1.0.0"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/text-CC%20BY%204.0-0F2F6D" alt="Text licence: CC BY 4.0"></a>
+  <a href="LICENSES/EUPL-1.2.txt"><img src="https://img.shields.io/badge/code-EUPL--1.2-0F2F6D" alt="Code licence: EUPL-1.2"></a>
+  <a href="https://bamresearch.github.io/drmd-guidance/"><img src="https://img.shields.io/badge/read-the%20guidance-0096DC" alt="Read the guidance document"></a>
+</p>
 
 The published guidance for the **Digital Reference Material Document (DRMD)**, an XML format for
 reference material certificates and product information sheets, aligned with **ISO 33401:2024**.
@@ -6,7 +21,7 @@ reference material certificates and product information sheets, aligned with **I
 This repository holds the documentation site only. The schema itself, its validation rules and
 its worked examples live in the companion **schema** repository.
 
-**Published site:** https://punitharumilli.github.io/BestPracticeDocs/
+**Published site:** https://bamresearch.github.io/drmd-guidance/
 
 ## Building locally
 
@@ -22,13 +37,14 @@ build rather than being published.
 ## Structure
 
 ```
-best-practice/
+drmd-guidance/
 ├── LICENSE                        CC BY 4.0, the licence of the text (see "Licence" below)
 ├── LICENSES/                      EUPL-1.2 (code) and LGPL-3.0 / GPL-3.0 (schema tree data)
 ├── CONTRIBUTING.md                how to report an error or ask for a change
+├── LOGO_POLICY.md                 terms for using the DRMD logo
 ├── mkdocs.yml                     site configuration and navigation
 ├── requirements.txt               build dependencies, every package pinned
-├── overrides/main.html            theme override: BAM logo in the sidebar
+├── overrides/main.html            theme override: DRMD logo in the sidebar
 ├── tools/
 │   └── build_schema_tree.py       regenerates the interactive tree data from the schema
 └── docs/
@@ -48,7 +64,8 @@ best-practice/
 The site loads nothing from other servers: the fonts (Inter, JetBrains Mono), the diagram library
 (Mermaid 11.16.1) and the library of the schema tree (D3 7.9.0) are served from `docs/assets`.
 Reading the guide therefore sends no visitor data to Google Fonts, unpkg or any other service, and
-no code from another server runs on the site.
+no code from another server runs on the site. The foot of every page links to BAM's
+[imprint](https://bam.de/en/disclaimer) and [privacy policy](https://bam.de/en/privacy-policy).
 
 The language menu offers a German machine translation by Google Translate. It opens the current page
 on Google's translation address (translate.goog) only when a reader chooses **Deutsch**; nothing
@@ -96,7 +113,8 @@ Copyright (c) 2024 Bundesanstalt für Materialforschung und -prüfung (BAM)
 | The code: the page template (`overrides/`), the scripts and style sheets (`docs/assets/js/translate.js`, `docs/assets/css/`), the script and style sheet embedded in `docs/schema_tree.md`, `tools/build_schema_tree.py` and the workflow in `.github/` | EUPL v1.2, see [`LICENSES/EUPL-1.2.txt`](LICENSES/EUPL-1.2.txt) |
 | `docs/schema_data/schema.json`, generated from the DRMD schema and rules (BAM) and from the DCC and D-SI schemas (Physikalisch-Technische Bundesanstalt, PTB), whose annotations it contains | GNU LGPL v3, see [`LICENSES/LGPL-3.0.txt`](LICENSES/LGPL-3.0.txt) and [`LICENSES/GPL-3.0.txt`](LICENSES/GPL-3.0.txt) |
 | Fonts, Mermaid, D3 (`docs/assets/fonts/`, `docs/assets/js/`) | Their own licences, in the files next to them; see `docs/licence.md` |
-| The BAM name and logo (`docs/assets/BAM_Logo_RGB.jpg`) | Not licensed; they belong to BAM |
+| The DRMD logo (`docs/assets/logo/`) | Not licensed under CC BY 4.0 or any other open licence; it belongs to BAM and may be used as described in the [Logo Policy](LOGO_POLICY.md). A changed version of the site must not carry it |
+| The BAM name | Not licensed; it belongs to BAM |
 
 CC BY 4.0 lets anyone share and adapt the text, provided they credit BAM, link to the licence and
 say if they changed it; it gives no right to suggest that BAM endorses them. How to credit, the

@@ -92,8 +92,8 @@ Profile B **includes all Profile A requirements**, plus the following:
 
 ### Profile B: MUST and SHOULD
 
-!!! danger "Certification Rules (CRM Profile)"
-    Profile B aligns closely with the CRM Schematron profile rules (`RMC-*`).
+!!! danger "Certification rules (reference material certificate)"
+    Profile B aligns closely with the certificate rules of the Schematron file (`RMC-*`).
 
 | Requirement | Description |
 |-------------|-------------|
@@ -102,7 +102,7 @@ Profile B **includes all Profile A requirements**, plus the following:
 | **Quantity Kinds** | Every certified value SHOULD carry an `si:quantityTypeQUDT`, so a consumer knows what was measured and not only in what unit. |
 | **D-SI Unit Quality** | For certified values, aim for the D-SI **Gold** class. Do not chase Platinum for its own sake: forcing a mass fraction into base units where the field reports mg/kg makes the certificate harder to read without making it more correct. |
 | **Unambiguous Property Identifiers** | For each `quantity` in result tables, producers SHOULD include `propertyIdentifiers` (at least `scheme` and `value`). Recommended schemes include CAS, InChI, or stable internal producer codes. |
-| **Traceability Statement** | Producers SHOULD populate `metrologicalTraceability` (`RMC-001`). |
+| **Traceability Statement** | Producers **MUST** populate `metrologicalTraceability` (`RMC-001`, error). |
 | **Certification Report Reference** | Producers SHOULD populate `referenceToCertificationReport`. |
 
 ---

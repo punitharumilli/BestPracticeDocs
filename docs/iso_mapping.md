@@ -54,7 +54,7 @@ RM certificate.
 | 5.2.12 | Document components | Mandatory | Mandatory | The XML document itself, see the note below | Satisfied structurally |
 | 5.2.13 | Document version | Mandatory | Mandatory | `administrativeData/coreData/documentVersion` | XSD + **DRMD-011** |
 | 5.2.14 | Measurement procedures for operationally defined measurands | Mandatory whenever applicable | Mandatory whenever applicable | `propertiesList/properties/procedures` | **DRMD-014** (conditional-error) |
-| 5.2.15 | Property of interest | Mandatory | Mandatory | `propertiesList/properties/results/result` | **DRMD-003**, **DRMD-009** |
+| 5.2.15 | Property of interest | Mandatory | Mandatory | `propertiesList/properties/results/result` | **DRMD-003**, **DRMD-009**, **PIS-002** |
 
 ### 5.3 (Information required in an RM certificate)
 
@@ -64,7 +64,7 @@ certificate.
 | # | Requirement | PIS | RMC | Where it lives in DRMD | Enforced by |
 |---|---|---|---|---|---|
 | 5.3.2 | Description of the material | Recommended | **Mandatory** | `materials/material/description` | **RMC-011** (error) / **PIS-005** (warning) |
-| 5.3.3 | Property value and associated uncertainty | Optional | **Mandatory** | `properties[@isCertified='true']` with `si:measurementUncertaintyUnivariate` on each value | **RMC-002**, **RMC-006** … **RMC-009** |
+| 5.3.3 | Property value and associated uncertainty | Optional | **Mandatory** | `properties[@isCertified='true']`, each numeric value with an uncertainty in one of the forms D-SI provides for it ([Properties](properties.md#5111-sireal)) | **RMC-002**, **RMC-003**, **RMC-006** … **RMC-009** |
 | 5.3.4 | Metrological traceability | Optional | **Mandatory** | `statements/metrologicalTraceability` | **RMC-001** (error) |
 | 5.3.5 | Name and function of the RM producer's approving officer | Optional | **Mandatory** | `administrativeData/respPersons/dcc:respPerson`, `dcc:person/dcc:name` for the name, `dcc:role` for the function | **RMC-010** (name) + **RMC-012** (function) |
 
@@ -88,8 +88,8 @@ certificate.
 This is the requirement most often mapped to the wrong element.
 
 `coreData/uniqueIdentifier` identifies **the document**. ISO 33401:2024, 5.2.3 asks for the
-unique identifier of **the reference material**: "a combination of a product code and a batch
-number", such as `NMIJ CRM 7305-a` or `ERM-AC110`, distinguishable from any other RM issued by
+unique identifier of **the reference material**: typically a product code, combined where needed
+with a batch or lot number, for example `BAM-M386a`, that distinguishes it from any other RM of
 the same producer.
 
 They cannot be the same field, because one document may cover several materials, and one material
@@ -109,15 +109,15 @@ is described by successive document revisions. In DRMD the RM identifier is
 </drmd:materialIdentifiers>
 ```
 
-ISO 33401:2024, 5.2.3 also asks that where each unit is individually characterised, the document
-carry an additional identifier such as a serial number for that unit. Add it as a further
+ISO 33401:2024, 5.2.3 also asks for a further identifier, for example a serial number, for each
+unit where units are individually characterised. Add it as a further
 `materialIdentifier` with its own scheme.
 
 ### 5.2.12 (document components)
 
-ISO 33401:2024 requires that an RM document be arranged so that all its components are
-recognisable as part of the whole, and that the end is clearly marked. The example given in the
-standard is a page number and a total page count.
+ISO 33401:2024, 5.2.12, asks that every part of an RM document can be identified as belonging to
+it and that its end can be recognised. On paper this is usually done with page numbers and the
+total number of pages.
 
 A DRMD instance meets this by being what it is: a single well-formed XML document with exactly
 one root element. Its start and end are explicit, and every component is inside it by
@@ -135,9 +135,8 @@ to every validation report. Two things are still worth doing:
 
 ### 5.3.5 (the function, not only the name)
 
-ISO 33401:2024, 5.3.5 asks for "the name **and function** of an officer representing the RM
-producer and accepting responsibility for the contents of the certificate". Both halves are
-required.
+ISO 33401:2024, 5.3.5 asks for the name **and the function** of the RM producer's approving
+officer, who takes responsibility for the content of the certificate. Both halves are required.
 
 `dcc:respPerson` provides both: `dcc:person/dcc:name` for the name, which the DCC schema already
 makes mandatory, and `dcc:role` for the function, which it does not. **RMC-012** requires at
@@ -157,10 +156,10 @@ producer, and it depends on getting 5.2.3 right.
 
 Clause 6 requires the label to:
 
-* be securely attached, and to stay legible and intact under the defined storage and handling
+* be firmly attached, and remain readable and undamaged under the stated storage and handling
   conditions for the whole period of validity;
 * allow the appropriate RM document to be identified, **by the unique RM identifier of 5.2.3**;
-* include the name of the RM and the producer where space allows;
+* show the name of the RM and of the producer where there is room;
 * carry health, safety, environmental and transport information where appropriate.
 
 Clause 6 also advises that **neither certified nor indicative property values should appear on the

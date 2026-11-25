@@ -76,7 +76,7 @@ This guide provides instructions for reference material producers, resellers, la
             <span class="drmd-big-letter">D</span><span class="drmd-rest-word">ocument</span>
         </div>
         <div class="drmd-desc">
-            The Document signifies the final structured layout specifically designed to output Certified Reference Materials (CRM) and Product Information Sheets.
+            The Document signifies the final structured layout specifically designed to output reference material certificates and product information sheets.
         </div>
     </div>
 </div>
@@ -144,7 +144,7 @@ This guidance document is written for several stakeholders across the quality in
 
 With an XML Schema one can check if a document is well formed and structurally complete. It cannot be used to express *"if this is a certificate, then metrological traceability is required"*. XSD 1.0 has no way to make one requirement depend on the value of another element. That conditional logic lives in the companion **Schematron** file, `drmd-business-rules.sch`.
 
-Each rule carries a severity that maps directly onto an ISO 33401:2024 requirement level, so a validation report can be read against the standard without interpretation.
+Each rule carries a severity that follows the ISO 33401:2024 requirement level of what it checks, so a validation report can be read against the standard. One rule combines two levels: DRMD-014 checks the measurement procedures that 5.2.14 makes mandatory whenever applicable and 5.4.2 recommends, and it uses the stricter level.
 
 !!! failure "Hard error, `role="error"`"
     **ISO level: Mandatory.** The document is non-compliant and must fail conformance validation. Example: a certificate without a `metrologicalTraceability` statement (RMC-001), or a material with no identifier of its own (DRMD-016).

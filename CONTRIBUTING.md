@@ -15,6 +15,9 @@ the site.
 
 Pull requests are welcome; please open an issue first, so that the change can be discussed before
 work starts. Run `mkdocs build` before submitting: the build is strict and fails on a broken link.
+A change that adds, updates or removes third-party software (a font, a script library, a build
+package) also updates its licence and copyright notice on the page "Licence & Credits"
+(`docs/licence.md`) and in `requirements.txt` where it applies.
 
 By submitting a contribution, you confirm that you have the right to do so, and you agree that it
 is published under the licence of the files it changes: CC BY 4.0 for text, the EUPL v1.2 for
@@ -24,7 +27,8 @@ code (see the section "Licence" in `README.md`; GitHub Terms of Service, section
 
 CC BY 4.0 allows you to share and adapt the text. If you do, you must credit BAM, link to the
 licence and say that you changed it, and you must not suggest that BAM endorses your version. The
-licence gives no right to use the name or logo of BAM. How to credit is shown on the page
+licence gives no right to use the name of BAM or the DRMD logo; a changed version must not carry
+the DRMD logo (see the [Logo Policy](LOGO_POLICY.md)). How to credit is shown on the page
 "Licence & Credits" of the site (`docs/licence.md`).
 
 We also ask you, without this being a condition of the licence, to tell us about your change, so

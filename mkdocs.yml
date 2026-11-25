@@ -1,18 +1,22 @@
 site_name: Digital Reference Material Document (DRMD)
 site_description: Guidance document for the DRMD XML schema, aligned with ISO 33401:2024
 site_author: BAM, Bundesanstalt für Materialforschung und -prüfung
-site_url: https://punitharumilli.github.io/BestPracticeDocs/
+site_url: https://bamresearch.github.io/drmd-guidance/
 # Shown at the foot of every page. The licence of the text, the code and the third-party software
 # is set out in docs/licence.md ("Licence & Credits").
 copyright: >-
   Copyright &copy; 2024 Bundesanstalt für Materialforschung und -prüfung (BAM) &middot;
-  Text licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> &middot;
+  Text licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, code under the
+  <a href="https://interoperable-europe.ec.europa.eu/collection/eupl/eupl-text-eupl-12">EUPL v1.2</a>;
+  the DRMD logo is not covered by these licences
+  (<a href="https://github.com/BAMresearch/drmd-guidance/blob/main/LOGO_POLICY.md">Logo Policy</a>) &middot;
   Partially funded and supported by the <a href="https://www.qi-digital.de/">QI-Digital</a> project
+  &middot; <a href="https://bam.de/en/disclaimer">Imprint</a> &middot; <a href="https://bam.de/en/privacy-policy">Privacy policy</a>
 
 theme:
   name: material
   custom_dir: overrides
-  favicon: assets/BAM_Logo_RGB.jpg
+  favicon: assets/logo/drmd-icon-180.png
   palette:
     - scheme: default
       primary: indigo
