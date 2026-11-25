@@ -2,7 +2,8 @@
   Page template of the DRMD guidance document.
   The site_nav block below is adapted from the template base.html of Material for MkDocs 9.7.7
   (Copyright (c) 2016-2025 Martin Donath, MIT License; licence text in docs/licence.md).
-  Changes: the DRMD logo is shown above the navigation, and the home page has no table of contents.
+  Changes: the DRMD logo is shown above the navigation and links to the DRMD website, and the home
+  page has no table of contents.
 -#}
 {% extends "base.html" %}
 
@@ -19,7 +20,7 @@
       <div class="md-sidebar__scrollwrap">
         <div class="md-sidebar__inner">
           <div style="position: sticky; top: 0; z-index: 10; padding: 10px 15px; margin-bottom: 10px; text-align: center; background-color: white; border-bottom: 1px solid #e0e0e0;">
-            <a href="{{ base_url }}/" title="Home">
+            <a href="https://bamresearch.github.io/drmd/" title="DRMD website">
               <img src="{{ base_url }}/assets/logo/drmd-logo-640.png" alt="Digital Reference Material Document (DRMD)" width="640" height="219" style="width: 100%; max-width: 190px; height: auto; display: inline-block;" />
             </a>
           </div>
